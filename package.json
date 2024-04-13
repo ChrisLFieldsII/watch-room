@@ -1,0 +1,13 @@
+{
+  "name": "mediasync",
+  "packageManager": "yarn@4.0.2",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "dev": "web-ext run"
+  },
+  "devDependencies": {
+    "@types/firefox-webext-browser": "^120.0.3",
+    "typescript": "^5.4.5"
+  }
+}
