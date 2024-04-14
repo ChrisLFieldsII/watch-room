@@ -7,6 +7,7 @@
     "dev": "web-ext run"
   },
   "devDependencies": {
+    "@types/jquery": "^3",
     "@types/webextension-polyfill": "^0.10.7",
     "copy-webpack-plugin": "^12.0.2",
     "ts-loader": "^9.5.1",
@@ -15,6 +16,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "jquery": "^3.7.1",
     "webextension-polyfill": "^0.10.0"
   }
 }
