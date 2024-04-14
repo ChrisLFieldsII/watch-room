@@ -1,3 +1,6 @@
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts
-// Put all the javascript code here, that you want to execute after page load.
-console.log('This is content script.');
+
+console.log('importing browser')
+// import browser from 'webextension-polyfill'
+const browser = require('webextension-polyfill')
+console.log('This is content script.', browser)
