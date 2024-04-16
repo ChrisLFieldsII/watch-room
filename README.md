@@ -1,5 +1,10 @@
 # Media Sync
 
+## How to dev
+
+- run `yarn dev` to load the web extension into firefox with hot reloading
+- run `yarn watch` to start the typescript watch process
+
 ## Debugging
 
 Follow this link to debug: https://extensionworkshop.com/documentation/develop/debugging/
