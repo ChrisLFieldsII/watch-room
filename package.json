@@ -6,6 +6,11 @@
     "watch": "yarn build -w",
     "dev": "web-ext run"
   },
+  "dependencies": {
+    "jquery": "^3.7.1",
+    "socket.io-client": "^4.7.5",
+    "webextension-polyfill": "^0.10.0"
+  },
   "devDependencies": {
     "@types/jquery": "^3",
     "@types/webextension-polyfill": "^0.10.7",
@@ -14,9 +19,5 @@
     "typescript": "^5.4.5",
     "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4"
-  },
-  "dependencies": {
-    "jquery": "^3.7.1",
-    "webextension-polyfill": "^0.10.0"
   }
 }
