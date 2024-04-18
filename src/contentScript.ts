@@ -2,19 +2,14 @@
 
 import browser from 'webextension-polyfill'
 import $ from 'jquery'
-import { io } from 'socket.io-client'
 import { nanoid } from 'nanoid'
+
+import { SocketController, EventData } from './socket.controller'
 
 console.debug('Content script loaded')
 
-const socket = io('http://localhost:3000', { transports: ['websocket'] })
-
-const userId = nanoid()
-
 const video = $<HTMLVideoElement>('video')
 console.debug('video', video)
-
-let shouldEmitOnPlay = true
 
 function getVideoTime() {
   return video.prop('currentTime')
@@ -24,68 +19,44 @@ function setVideoTime(time: number) {
   video.prop('currentTime', time)
 }
 
+let shouldEmitOnPlay = true
 video.on('play', () => {
-  console.debug('video play', getVideoTime())
+  console.debug('HTML video "play" event', getVideoTime())
+
   if (shouldEmitOnPlay) {
-    socket.emit('events', {
-      type: 'playVideo',
-      data: { time: getVideoTime(), userId },
-    })
+    socketController.emit('playVideo', { time: getVideoTime() })
   }
   shouldEmitOnPlay = true
 })
 
 video.on('pause', () => {
-  console.debug('video pause', getVideoTime())
+  console.debug('HTML video "pause" event', getVideoTime())
 })
 
 video.on('ended', () => {
-  console.debug('video ended', getVideoTime())
+  console.debug('HTML video "ended" event', getVideoTime())
 })
 
 video.on('seeked', () => {
-  console.debug('video seeked', getVideoTime())
+  console.debug('HTML video "seeked" event', getVideoTime())
 })
 
-socket
-  .on('connect', () => {
-    console.debug(socket.id)
+const socketController = new SocketController().init({
+  uri: 'http://localhost:3000',
+  userId: nanoid(),
+  eventHandlers: {
+    playVideo: (data: EventData<'playVideo'>) => {
+      shouldEmitOnPlay = false
 
-    socket.on('events', (event: { type: string; data: any }) => {
-      console.debug('received event', event)
-      const { type, data } = event
-
-      if (data.userId === userId) {
-        console.debug('event from self, ignoring...')
-        return
-      }
-
-      if (type === 'playVideo') {
-        shouldEmitOnPlay = false
-        // setVideoTime(data.time)
-        video
-          .get(0)
-          ?.play()
-          .then(() => {
-            // set video time only works after play is called
-            setVideoTime(data.time)
-            console.debug('video play success', getVideoTime())
-          })
-          .catch((error) => console.error('video play error', error))
-      }
-    })
-  })
-  .on('connect_error', (error) => {
-    if (socket.active) {
-      // temporary failure, the socket will automatically try to reconnect
-      console.debug(
-        'temporary socket connection error. socket is reconnecting...',
-      )
-    } else {
-      // the connection was denied by the server
-      // in that case, `socket.connect()` must be manually called in order to reconnect
-      window.alert(
-        `Failed to establish socket connection to server: ${error.message}`,
-      )
-    }
-  })
+      video
+        .get(0)
+        ?.play()
+        .then(() => {
+          // set video time only works after play is called
+          setVideoTime(data.time)
+          console.debug('video play success', getVideoTime())
+        })
+        .catch((error) => console.error('video play error', error))
+    },
+  },
+})

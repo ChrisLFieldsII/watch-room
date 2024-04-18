@@ -2,4 +2,4 @@
 
 import browser from 'webextension-polyfill'
 
-console.log('This is background script.')
+console.debug('This is background script.')
