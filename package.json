@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "jquery": "^3.7.1",
+    "nanoid": "^5.0.7",
     "socket.io-client": "^4.7.5",
     "webextension-polyfill": "^0.10.0"
   },

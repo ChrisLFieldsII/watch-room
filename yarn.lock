@@ -995,6 +995,7 @@ __metadata:
     "@types/webextension-polyfill": "npm:^0.10.7"
     copy-webpack-plugin: "npm:^12.0.2"
     jquery: "npm:^3.7.1"
+    nanoid: "npm:^5.0.7"
     socket.io-client: "npm:^4.7.5"
     ts-loader: "npm:^9.5.1"
     typescript: "npm:^5.4.5"
@@ -1048,6 +1049,15 @@ __metadata:
   version: 2.1.2
   resolution: "ms@npm:2.1.2"
   checksum: a437714e2f90dbf881b5191d35a6db792efbca5badf112f87b9e1c712aace4b4b9b742dd6537f3edf90fd6f684de897cec230abde57e87883766712ddda297cc
+  languageName: node
+  linkType: hard
+
+"nanoid@npm:^5.0.7":
+  version: 5.0.7
+  resolution: "nanoid@npm:5.0.7"
+  bin:
+    nanoid: bin/nanoid.js
+  checksum: a3fb1c157e3e35378f44e5a7130c70f80c9037f66c9a37285e5e3d8298e8405fcb2399baaa420980b0fe5fd9c2e4186a6a31c3526f21de03cf34c1b459871401
   languageName: node
   linkType: hard
 
