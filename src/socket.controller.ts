@@ -2,6 +2,7 @@ import { io, Socket } from 'socket.io-client'
 
 interface SocketEventMap {
   playVideo: { time: number }
+  pauseVideo: { time: number }
 }
 
 type SocketEventKey = keyof SocketEventMap
@@ -87,9 +88,18 @@ export class SocketController {
     return this
   }
 
-  emit = <T extends SocketEventKey>(type: T, data: SocketEventMap[T]) => {
-    console.debug('emitting event', type, data)
-    this.socket.emit('events', { type, data: { ...data, userId: this.userId } })
+  emit = <T extends SocketEventKey>(
+    type: T,
+    data: SocketEventMap[T],
+    skip = false,
+  ) => {
+    if (!skip) {
+      console.debug('emitting event', type, data)
+      this.socket.emit('events', {
+        type,
+        data: { ...data, userId: this.userId },
+      })
+    }
     return this
   }
 }

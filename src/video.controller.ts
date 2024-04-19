@@ -77,4 +77,9 @@ export class VideoController {
       })
       .catch((error) => console.error('video play error', error))
   }
+
+  pause(time: number) {
+    this.video?.get(0)?.pause()
+    this.setVideoTime(time)
+  }
 }
