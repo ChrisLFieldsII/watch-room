@@ -5,12 +5,14 @@ interface SocketEventMap {
   pauseVideo: { time: number }
 }
 
-type SocketEventKey = keyof SocketEventMap
+export type SocketEventKey = keyof SocketEventMap
 
 /** use this to type the event handler function data */
 export type SocketEventData<T extends SocketEventKey> = SocketEventMap[T] & {
   userId: string
 }
+export type SocketEventDataNoUserId<T extends SocketEventKey> =
+  SocketEventMap[T]
 
 /**
  * `data` is unfortunately typed as `any` because the event handlers can have different data types & couldn't figure a good way to type this off the `EventKey`

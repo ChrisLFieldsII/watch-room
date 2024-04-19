@@ -3,7 +3,12 @@
 import browser from 'webextension-polyfill'
 import { nanoid } from 'nanoid'
 
-import { SocketController, SocketEventData } from './socket.controller'
+import {
+  SocketController,
+  SocketEventData,
+  SocketEventDataNoUserId,
+  SocketEventKey,
+} from './socket.controller'
 import { VideoController } from './video.controller'
 
 console.debug('Content script loaded')
@@ -14,30 +19,26 @@ console.debug('Content script loaded')
  */
 let skipEmit = false
 
+/**
+ * helper to handle skipEmit logic
+ */
+function emit<T extends SocketEventKey>(
+  key: T,
+  data: SocketEventDataNoUserId<T>,
+) {
+  socketController.emit(key, data, skipEmit)
+
+  // NOTE: must ensure that we reset the skipEmit flag after emitting the event
+  skipEmit = false
+}
+
 const videoController = new VideoController().init({
   eventHandlers: {
     play: () => {
-      socketController.emit(
-        'playVideo',
-        {
-          time: videoController.getVideoTime(),
-        },
-        skipEmit,
-      )
-
-      // NOTE: must ensure that we reset the skipEmit flag after emitting the event
-      skipEmit = false
+      emit('playVideo', { time: videoController.getVideoTime() })
     },
     pause: () => {
-      socketController.emit(
-        'pauseVideo',
-        {
-          time: videoController.getVideoTime(),
-        },
-        skipEmit,
-      )
-
-      skipEmit = false
+      emit('pauseVideo', { time: videoController.getVideoTime() })
     },
     ended: () => {},
     seeked: () => {},
