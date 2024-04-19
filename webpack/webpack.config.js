@@ -11,6 +11,7 @@ module.exports = {
       'backgroundScript.ts',
     ),
     contentScript: path.resolve(__dirname, '..', 'src', 'contentScript.ts'),
+    browserAction: path.resolve(__dirname, '..', 'src', 'browserAction.ts'),
   },
   output: {
     path: path.join(__dirname, '../dist'),

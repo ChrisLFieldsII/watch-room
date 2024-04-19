@@ -24,5 +24,6 @@
   },
   "options_ui": {
     "page": "options/index.html"
-  }
+  },
+  "permissions": ["storage"]
 }

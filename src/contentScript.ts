@@ -14,7 +14,7 @@ import { VideoController } from './video.controller'
 console.debug('Content script loaded')
 
 /**
- * normally we dont want to skip the emit b/c we want to emit the event that the user triggered,
+ * normally we dont want to skip the emit,
  * but when reacting to a socket event, we dont want to emit the event again
  */
 let skipEmit = false

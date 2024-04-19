@@ -12,3 +12,5 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 ## Philosophies
 
 - The extension should listen to the video player events rather than re-inventing the wheel and having controls in the extension browserAction
+
+TODO: add UI to browserAction to create/join room
