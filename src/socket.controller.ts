@@ -1,32 +1,34 @@
 import { io, Socket } from 'socket.io-client'
 
-interface EventMap {
+interface SocketEventMap {
   playVideo: { time: number }
 }
 
-type EventKey = keyof EventMap
+type SocketEventKey = keyof SocketEventMap
 
 /** use this to type the event handler function data */
-export type EventData<T extends EventKey> = EventMap[T] & { userId: string }
+export type SocketEventData<T extends SocketEventKey> = SocketEventMap[T] & {
+  userId: string
+}
 
 /**
  * `data` is unfortunately typed as `any` because the event handlers can have different data types & couldn't figure a good way to type this off the `EventKey`
  * type the `data` for each handler with the `EventData` generic type instead.
  */
-type EventHandlers = Record<EventKey, (data: any) => void>
+type SocketEventHandlers = Record<SocketEventKey, (data: any) => void>
 
 /** interface for socket emit/on functions: https://socket.io/docs/v4/typescript/#types-for-the-client */
 interface SocketEvents {
-  events: <T extends EventKey>(event: {
+  events: <T extends SocketEventKey>(event: {
     type: T
-    data: EventMap[T] & { userId: string }
+    data: SocketEventMap[T] & { userId: string }
   }) => void
 }
 
 interface InitParams {
   uri: string
   userId: string
-  eventHandlers: EventHandlers
+  eventHandlers: SocketEventHandlers
 }
 
 export class SocketController {
@@ -85,7 +87,7 @@ export class SocketController {
     return this
   }
 
-  emit = <T extends EventKey>(type: T, data: EventMap[T]) => {
+  emit = <T extends SocketEventKey>(type: T, data: SocketEventMap[T]) => {
     console.debug('emitting event', type, data)
     this.socket.emit('events', { type, data: { ...data, userId: this.userId } })
     return this
