@@ -10,9 +10,9 @@ export type SocketEventKey = keyof SocketEventMap
 /** use this to type the event handler function data */
 export type SocketEventData<T extends SocketEventKey> = SocketEventMap[T] & {
   userId: string
+  roomId: string
 }
-export type SocketEventDataNoUserId<T extends SocketEventKey> =
-  SocketEventMap[T]
+export type RawSocketEventData<T extends SocketEventKey> = SocketEventMap[T]
 
 /**
  * `data` is unfortunately typed as `any` because the event handlers can have different data types & couldn't figure a good way to type this off the `EventKey`
@@ -24,13 +24,14 @@ type SocketEventHandlers = Record<SocketEventKey, (data: any) => void>
 interface SocketEvents {
   events: <T extends SocketEventKey>(event: {
     type: T
-    data: SocketEventMap[T] & { userId: string }
+    data: SocketEventMap[T] & { userId: string; roomId: string }
   }) => void
 }
 
 interface InitParams {
   uri: string
   userId: string
+  roomId: string
   eventHandlers: SocketEventHandlers
 }
 
@@ -38,14 +39,16 @@ export class SocketController {
   // @ts-expect-error - we know init will be called
   private socket: Socket<SocketEvents>
   private userId: string = ''
+  private roomId: string = ''
 
   /**
    * Creates the socket connection and sets up event listeners
    */
-  init = ({ uri, eventHandlers, userId }: InitParams) => {
+  init = ({ uri, eventHandlers, userId, roomId }: InitParams) => {
     console.debug('initializing socket controller', { uri, userId })
 
     this.userId = userId
+    this.roomId = roomId
 
     this.socket = io(uri, {
       transports: ['websocket'],
@@ -61,6 +64,10 @@ export class SocketController {
 
           if (data.userId === userId) {
             console.debug('received event from self, ignoring...')
+            return
+          }
+          if (data.roomId !== this.roomId) {
+            console.debug('received event from different room, ignoring...')
             return
           }
 
@@ -99,9 +106,14 @@ export class SocketController {
       console.debug('emitting event', type, data)
       this.socket.emit('events', {
         type,
-        data: { ...data, userId: this.userId },
+        data: { ...data, userId: this.userId, roomId: this.roomId },
       })
     }
+    return this
+  }
+
+  setRoomId = (roomId: string) => {
+    this.roomId = roomId
     return this
   }
 }

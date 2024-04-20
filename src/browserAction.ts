@@ -2,6 +2,7 @@
 import browser from 'webextension-polyfill'
 import $ from 'jquery'
 import { customAlphabet } from 'nanoid'
+import { STORAGE_KEYS } from './utils'
 
 // nanoid util generator - https://zelark.github.io/nano-id-cc/
 const alphabet =
@@ -9,10 +10,6 @@ const alphabet =
 const nanoid = customAlphabet(alphabet, 8)
 
 console.debug('Loaded browser action script.')
-
-const STORAGE_KEYS = {
-  ROOM_ID: 'roomId',
-}
 
 async function main() {
   // try to get room id
@@ -32,11 +29,27 @@ async function main() {
   const roomIdEle = $(`<p>Room ID: ${roomId}</p>`)
   $('body').append(roomIdEle)
 
+  const setRoomId = async (newRoomId: string) => {
+    roomIdEle.text(`Room ID: ${newRoomId}`)
+    await browser.storage.local.set({ [STORAGE_KEYS.ROOM_ID]: newRoomId })
+  }
+
+  const createBtn = $('<button class="block">Create New Room</button>')
+  createBtn.on('click', async () => {
+    const newRoomId = nanoid()
+    setRoomId(newRoomId)
+  })
+  $('body').append(createBtn)
+
   // render join input
   const joinInput = $(
     '<input type="text" placeholder="Enter Room ID to join" />',
   )
   const joinBtn = $('<button>Join Room</button>')
+  joinBtn.on('click', async () => {
+    const newRoomId = joinInput.val() as string
+    setRoomId(newRoomId)
+  })
   $('body').append(joinInput).append(joinBtn)
 }
 
