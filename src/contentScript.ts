@@ -73,6 +73,9 @@ async function main() {
   })
 }
 
-main()
-  .then(() => console.debug('content script loaded'))
-  .catch((error) => console.debug('content script error', error))
+// NOTE: setTimeout is a hacky way to ensure that the content script runs after the page has loaded so it can find a video element. may need a findVideo button to manually find the video element
+setTimeout(() => {
+  main()
+    .then(() => console.debug('content script loaded'))
+    .catch((error) => console.debug('content script error', error))
+}, 3000)
