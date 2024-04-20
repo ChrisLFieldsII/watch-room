@@ -1,10 +1,9 @@
 import $ from 'jquery'
+import { AbstractController } from './abstract.controller'
 
 interface VideoEventMap {
   play: {}
   pause: {}
-  ended: {}
-  seeked: {}
 }
 
 type VideoEventKey = keyof VideoEventMap
@@ -15,7 +14,7 @@ interface InitParams {
   eventHandlers: VideoEventHandlers
 }
 
-export class VideoController {
+export class VideoController extends AbstractController {
   private video: JQuery<HTMLVideoElement> | null = null
 
   findVideo() {
@@ -34,25 +33,23 @@ export class VideoController {
     this.video.on('play', () => {
       console.debug('HTML video "play" event', this.getVideoTime())
 
+      if (!this.isEnabled) {
+        console.debug('Video is not enabled, ignoring play event')
+        return
+      }
+
       eventHandlers.play()
     })
 
     this.video.on('pause', () => {
       console.debug('HTML video "pause" event', this.getVideoTime())
 
+      if (!this.isEnabled) {
+        console.debug('Video is not enabled, ignoring pause event')
+        return
+      }
+
       eventHandlers.pause()
-    })
-
-    this.video.on('ended', () => {
-      console.debug('HTML video "ended" event', this.getVideoTime())
-
-      eventHandlers.ended()
-    })
-
-    this.video.on('seeked', () => {
-      console.debug('HTML video "seeked" event', this.getVideoTime())
-
-      eventHandlers.seeked()
     })
 
     return this
@@ -75,7 +72,7 @@ export class VideoController {
         this.setVideoTime(time)
         console.debug('video play success')
       })
-      .catch((error) => console.error('video play error', error))
+      .catch((error) => console.debug('video play error', error))
   }
 
   pause(time: number) {

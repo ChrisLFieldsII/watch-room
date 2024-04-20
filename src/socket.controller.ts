@@ -1,4 +1,5 @@
 import { io, Socket } from 'socket.io-client'
+import { AbstractController } from './abstract.controller'
 
 interface SocketEventMap {
   playVideo: { time: number }
@@ -35,7 +36,7 @@ interface InitParams {
   eventHandlers: SocketEventHandlers
 }
 
-export class SocketController {
+export class SocketController extends AbstractController {
   // @ts-expect-error - we know init will be called
   private socket: Socket<SocketEvents>
   private userId: string = ''
@@ -68,6 +69,10 @@ export class SocketController {
           }
           if (data.roomId !== this.roomId) {
             console.debug('received event from different room, ignoring...')
+            return
+          }
+          if (!this.isEnabled) {
+            console.debug('socket is not enabled, ignoring event')
             return
           }
 

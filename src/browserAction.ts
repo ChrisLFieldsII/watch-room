@@ -13,9 +13,14 @@ console.debug('Loaded browser action script.')
 
 async function main() {
   // try to get room id
-  let { roomId } = (await browser.storage.local.get(STORAGE_KEYS.ROOM_ID)) as {
+  let { roomId, enabled } = (await browser.storage.local.get([
+    STORAGE_KEYS.ROOM_ID,
+    STORAGE_KEYS.ENABLED,
+  ])) as {
     roomId?: string
+    enabled?: boolean
   }
+  console.debug('storage', { roomId, enabled })
 
   // generate a room id if one doesn't exist
   if (!roomId) {
@@ -28,6 +33,18 @@ async function main() {
   // render room id
   const roomIdEle = $(`<p>Room ID: ${roomId}</p>`)
   $('body').append(roomIdEle)
+
+  // render enable/disable checkbox
+  const enableCheckbox = $('<input type="checkbox" />')
+  const enableLabel = $('<label>Enable Sync</label>')
+  enableLabel.prepend(enableCheckbox)
+  $('body').append(enableLabel)
+  enableCheckbox.prop('checked', enabled)
+  enableCheckbox.on('change', () => {
+    const checked = enableCheckbox.prop('checked')
+    console.debug('Enable checkbox changed', checked)
+    browser.storage.local.set({ [STORAGE_KEYS.ENABLED]: checked })
+  })
 
   const setRoomId = async (newRoomId: string) => {
     roomIdEle.text(`Room ID: ${newRoomId}`)

@@ -41,8 +41,6 @@ async function main() {
       pause: () => {
         emit('pauseVideo', { time: videoController.getVideoTime() })
       },
-      ended: () => {},
-      seeked: () => {},
     },
   })
 
@@ -66,9 +64,14 @@ async function main() {
   })
 
   browser.storage.onChanged.addListener((changes) => {
+    console.debug('storage changed', changes)
     if (changes[STORAGE_KEYS.ROOM_ID]) {
-      console.debug('roomId changed', changes.roomId.newValue)
       socketController.setRoomId(changes.roomId.newValue)
+    }
+    if (changes[STORAGE_KEYS.ENABLED]) {
+      const isEnabled = changes.enabled.newValue as boolean
+      socketController.setEnabled(isEnabled)
+      videoController.setEnabled(isEnabled)
     }
   })
 }
