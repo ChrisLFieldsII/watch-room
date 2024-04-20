@@ -1,13 +1,10 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "media-sync",
   "description": "MediaSync allows many users to join a room where they can watch a video or listen to audio together in a synchronized way with each user having the ability to control the media as needed",
   "version": "0.0.1",
   "icons": {
     "64": "icons/icon.png"
-  },
-  "background": {
-    "scripts": ["dist/backgroundScript.js"]
   },
   "content_scripts": [
     {
@@ -15,7 +12,7 @@
       "js": ["dist/contentScript.js"]
     }
   ],
-  "browser_action": {
+  "action": {
     "default_icon": {
       "64": "icons/icon.png"
     },

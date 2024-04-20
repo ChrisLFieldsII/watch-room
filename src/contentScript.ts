@@ -12,8 +12,6 @@ import {
 import { VideoController } from './video.controller'
 import { STORAGE_KEYS } from './utils'
 
-console.debug('Content script loaded')
-
 /**
  * normally we dont want to skip the emit,
  * but when reacting to a socket event, we dont want to emit the event again
@@ -49,7 +47,7 @@ async function main() {
   })
 
   const socketController = new SocketController().init({
-    uri: 'http://localhost:3000',
+    uri: 'http://localhost:3000', // TODO: move to env var
     userId: nanoid(),
     roomId,
     eventHandlers: {
