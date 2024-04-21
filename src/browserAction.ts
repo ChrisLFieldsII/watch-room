@@ -11,8 +11,7 @@ const nanoid = customAlphabet(alphabet, 8)
 
 console.debug('Loaded browser action script.')
 
-async function main() {
-  // try to get room id
+async function getStorageValues() {
   let { roomId, enabled } = (await browser.storage.local.get([
     STORAGE_KEYS.ROOM_ID,
     STORAGE_KEYS.ENABLED,
@@ -30,11 +29,16 @@ async function main() {
   }
   console.debug('Retrieved roomId from storage', roomId)
 
-  // render room id
+  return { roomId, enabled }
+}
+
+function renderRoomId(roomId: string) {
   const roomIdEle = $(`<p>Room ID: ${roomId}</p>`)
   $('body').append(roomIdEle)
+  return roomIdEle
+}
 
-  // render enable/disable checkbox
+function renderEnableCheckbox(enabled: boolean = false) {
   const enableCheckbox = $('<input type="checkbox" />')
   const enableLabel = $('<label>Enable Sync</label>')
   enableLabel.prepend(enableCheckbox)
@@ -45,29 +49,55 @@ async function main() {
     console.debug('Enable checkbox changed', checked)
     browser.storage.local.set({ [STORAGE_KEYS.ENABLED]: checked })
   })
+}
+
+function renderCreateRoomBtn({ onClick }: { onClick: Function }) {
+  const createBtn = $('<button class="block">Create New Room</button>')
+  createBtn.on('click', async () => {
+    onClick()
+  })
+  $('body').append(createBtn)
+}
+
+function renderJoinRoomInput({
+  onClick,
+}: {
+  onClick: (roomId: string) => void
+}) {
+  const joinInput = $(
+    '<input type="text" placeholder="Enter Room ID to join" />',
+  )
+  const joinBtn = $('<button>Join Room</button>')
+  joinBtn.on('click', async () => {
+    onClick(joinInput.val() as string)
+  })
+  $('body').append(joinInput).append(joinBtn)
+}
+
+async function main() {
+  const { roomId, enabled } = await getStorageValues()
+
+  const roomIdEle = renderRoomId(roomId)
+
+  renderEnableCheckbox(enabled)
 
   const setRoomId = async (newRoomId: string) => {
     roomIdEle.text(`Room ID: ${newRoomId}`)
     await browser.storage.local.set({ [STORAGE_KEYS.ROOM_ID]: newRoomId })
   }
 
-  const createBtn = $('<button class="block">Create New Room</button>')
-  createBtn.on('click', async () => {
-    const newRoomId = nanoid()
-    setRoomId(newRoomId)
+  renderCreateRoomBtn({
+    onClick: () => {
+      const newRoomId = nanoid()
+      setRoomId(newRoomId)
+    },
   })
-  $('body').append(createBtn)
 
-  // render join input
-  const joinInput = $(
-    '<input type="text" placeholder="Enter Room ID to join" />',
-  )
-  const joinBtn = $('<button>Join Room</button>')
-  joinBtn.on('click', async () => {
-    const newRoomId = joinInput.val() as string
-    setRoomId(newRoomId)
+  renderJoinRoomInput({
+    onClick: (newRoomId) => {
+      setRoomId(newRoomId)
+    },
   })
-  $('body').append(joinInput).append(joinBtn)
 }
 
 main()

@@ -13,4 +13,8 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 
 - The extension should listen to the video player events rather than re-inventing the wheel and having controls in the extension browserAction
 
-TODO: add UI to browserAction to create/join room
+## TODOS
+
+- add sync button
+- add find video button
+- technically disabling should tear down the socket
