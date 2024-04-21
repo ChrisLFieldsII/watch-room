@@ -1,36 +1,8 @@
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction
 import browser from 'webextension-polyfill'
 import $ from 'jquery'
-import { customAlphabet } from 'nanoid'
-import { STORAGE_KEYS } from './utils'
 
-// nanoid util generator - https://zelark.github.io/nano-id-cc/
-const alphabet =
-  '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-const nanoid = customAlphabet(alphabet, 8)
-
-console.debug('Loaded browser action script.')
-
-async function getStorageValues() {
-  let { roomId, enabled } = (await browser.storage.local.get([
-    STORAGE_KEYS.ROOM_ID,
-    STORAGE_KEYS.ENABLED,
-  ])) as {
-    roomId?: string
-    enabled?: boolean
-  }
-  console.debug('storage', { roomId, enabled })
-
-  // generate a room id if one doesn't exist
-  if (!roomId) {
-    console.debug('No roomId found in storage, generating one...')
-    roomId = nanoid()
-    await browser.storage.local.set({ [STORAGE_KEYS.ROOM_ID]: roomId })
-  }
-  console.debug('Retrieved roomId from storage', roomId)
-
-  return { roomId, enabled }
-}
+import { STORAGE_KEYS, getStorageValues, createRoomId } from './utils'
 
 function renderRoomId(roomId: string) {
   const roomIdEle = $(`<p>Room ID: ${roomId}</p>`)
@@ -74,6 +46,15 @@ function renderJoinRoomInput({
   $('body').append(joinInput).append(joinBtn)
 }
 
+function renderSyncBtn() {
+  const syncBtn = $('<button class="block">Sync</button>')
+  syncBtn.on('click', () => {
+    console.debug('sync button clicked')
+    browser.runtime.sendMessage({ action: 'sync' })
+  })
+  $('body').append(syncBtn)
+}
+
 async function main() {
   const { roomId, enabled } = await getStorageValues()
 
@@ -88,7 +69,7 @@ async function main() {
 
   renderCreateRoomBtn({
     onClick: () => {
-      const newRoomId = nanoid()
+      const newRoomId = createRoomId()
       setRoomId(newRoomId)
     },
   })
@@ -98,6 +79,8 @@ async function main() {
       setRoomId(newRoomId)
     },
   })
+
+  renderSyncBtn()
 }
 
 main()

@@ -12,6 +12,7 @@ type VideoEventHandlers = Record<VideoEventKey, () => void>
 
 interface InitParams {
   eventHandlers: VideoEventHandlers
+  enabled: boolean
 }
 
 export class VideoController extends AbstractController {
@@ -22,7 +23,9 @@ export class VideoController extends AbstractController {
     return this
   }
 
-  init({ eventHandlers }: InitParams) {
+  init({ eventHandlers, enabled }: InitParams) {
+    this.setEnabled(enabled)
+
     this.findVideo()
 
     if (!this.video?.length) {

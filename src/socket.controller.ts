@@ -34,6 +34,7 @@ interface InitParams {
   userId: string
   roomId: string
   eventHandlers: SocketEventHandlers
+  enabled: boolean
 }
 
 export class SocketController extends AbstractController {
@@ -45,11 +46,12 @@ export class SocketController extends AbstractController {
   /**
    * Creates the socket connection and sets up event listeners
    */
-  init = ({ uri, eventHandlers, userId, roomId }: InitParams) => {
+  init = ({ uri, eventHandlers, userId, roomId, enabled }: InitParams) => {
     console.debug('initializing socket controller', { uri, userId })
 
     this.userId = userId
     this.roomId = roomId
+    this.setEnabled(enabled)
 
     this.socket = io(uri, {
       transports: ['websocket'],

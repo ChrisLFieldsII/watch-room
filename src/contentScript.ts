@@ -10,7 +10,7 @@ import {
   SocketEventKey,
 } from './socket.controller'
 import { VideoController } from './video.controller'
-import { STORAGE_KEYS } from './utils'
+import { STORAGE_KEYS, getStorageValues } from './utils'
 
 /**
  * normally we dont want to skip the emit,
@@ -29,11 +29,10 @@ async function main() {
     skipEmit = false
   }
 
-  const { roomId = '' } = (await browser.storage.local.get(
-    STORAGE_KEYS.ROOM_ID,
-  )) as { roomId?: string }
+  const { roomId, enabled } = await getStorageValues()
 
   const videoController = new VideoController().init({
+    enabled,
     eventHandlers: {
       play: () => {
         emit('playVideo', { time: videoController.getVideoTime() })
@@ -46,6 +45,7 @@ async function main() {
 
   const socketController = new SocketController().init({
     uri: 'http://localhost:3000', // TODO: move to env var
+    enabled,
     userId: nanoid(),
     roomId,
     eventHandlers: {
@@ -73,6 +73,10 @@ async function main() {
       socketController.setEnabled(isEnabled)
       videoController.setEnabled(isEnabled)
     }
+  })
+
+  browser.runtime.onMessage.addListener((message) => {
+    console.debug('received message', message)
   })
 }
 
