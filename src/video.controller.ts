@@ -36,6 +36,8 @@ export class VideoController extends AbstractController {
       return this
     }
 
+    console.debug('Found video element', this.video)
+
     onFoundVideo(true)
 
     this.video.on('play', () => {
