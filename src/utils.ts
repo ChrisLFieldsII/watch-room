@@ -19,7 +19,6 @@ export async function getStorageValues() {
     roomId?: string
     enabled?: boolean
   }
-  console.debug('storage', { roomId, enabled })
 
   // generate a room id if one doesn't exist
   if (!roomId) {
@@ -27,7 +26,7 @@ export async function getStorageValues() {
     roomId = createRoomId()
     await browser.storage.local.set({ [STORAGE_KEYS.ROOM_ID]: roomId })
   }
-  console.debug('Retrieved roomId from storage', roomId)
+  console.debug('storage', { roomId, enabled })
 
   return { roomId, enabled }
 }

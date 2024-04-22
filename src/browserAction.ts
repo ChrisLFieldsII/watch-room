@@ -47,10 +47,18 @@ function renderJoinRoomInput({
 }
 
 function renderSyncBtn() {
-  const syncBtn = $('<button class="block">Sync</button>')
-  syncBtn.on('click', () => {
+  const syncBtn = $('<button class="block">Sync URL</button>')
+  syncBtn.prop('title', 'Sync the current tab with other users in the room')
+  syncBtn.on('click', async () => {
     console.debug('sync button clicked')
-    browser.runtime.sendMessage({ action: 'sync' })
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true })
+    for (const tab of tabs) {
+      console.debug('sending sync message to tab', tab)
+      browser.tabs
+        .sendMessage(tab.id as number, { type: 'sync' })
+        .then(() => console.debug('sync message sent'))
+        .catch((error) => console.debug('error sending sync message', error))
+    }
   })
   $('body').append(syncBtn)
 }

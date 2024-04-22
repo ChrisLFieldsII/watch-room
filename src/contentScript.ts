@@ -60,6 +60,11 @@ async function main() {
 
         videoController.pause(data.time)
       },
+      sync: (data: SocketEventData<'sync'>) => {
+        skipEmit = true
+
+        videoController.sync(data.url)
+      },
     },
   })
 
@@ -75,8 +80,11 @@ async function main() {
     }
   })
 
-  browser.runtime.onMessage.addListener((message) => {
+  browser.runtime.onMessage.addListener((message: BrowserMessage) => {
     console.debug('received message', message)
+    if (message.type === 'sync') {
+      emit('sync', { url: window.location.href })
+    }
   })
 }
 
@@ -86,3 +94,8 @@ setTimeout(() => {
     .then(() => console.debug('content script loaded'))
     .catch((error) => console.debug('content script error', error))
 }, 3000)
+
+interface BrowserMessage {
+  type: 'sync'
+  data: any
+}

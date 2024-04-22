@@ -4,6 +4,7 @@ import { AbstractController } from './abstract.controller'
 interface SocketEventMap {
   playVideo: { time: number }
   pauseVideo: { time: number }
+  sync: { url: string }
 }
 
 export type SocketEventKey = keyof SocketEventMap

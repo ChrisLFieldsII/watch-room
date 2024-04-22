@@ -15,6 +15,5 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 
 ## TODOS
 
-- add sync button
 - add find video button
 - technically disabling should tear down the socket

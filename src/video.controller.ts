@@ -82,4 +82,8 @@ export class VideoController extends AbstractController {
     this.video?.get(0)?.pause()
     this.setVideoTime(time)
   }
+
+  sync(url: string) {
+    window.location.href = url
+  }
 }
