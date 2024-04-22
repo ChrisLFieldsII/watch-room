@@ -9,16 +9,21 @@ export const createRoomId = customAlphabet(alphabet, 8)
 export const STORAGE_KEYS = {
   ROOM_ID: 'roomId',
   ENABLED: 'enabled',
+  FOUND_VIDEO: 'foundVideo',
 }
 
 export async function getStorageValues() {
-  let { roomId, enabled = false } = (await browser.storage.local.get([
+  const storage = (await browser.storage.local.get([
     STORAGE_KEYS.ROOM_ID,
     STORAGE_KEYS.ENABLED,
+    STORAGE_KEYS.FOUND_VIDEO,
   ])) as {
     roomId?: string
     enabled?: boolean
+    foundVideo?: boolean
   }
+
+  let { roomId, enabled = false, foundVideo = false } = storage
 
   // generate a room id if one doesn't exist
   if (!roomId) {
@@ -26,7 +31,17 @@ export async function getStorageValues() {
     roomId = createRoomId()
     await browser.storage.local.set({ [STORAGE_KEYS.ROOM_ID]: roomId })
   }
-  console.debug('storage', { roomId, enabled })
+  console.debug('storage', storage)
 
-  return { roomId, enabled }
+  return { roomId, enabled, foundVideo }
+}
+
+export async function sendMessageToTab(message: any) {
+  const tabs = await browser.tabs.query({ active: true, currentWindow: true })
+  for (const tab of tabs) {
+    browser.tabs
+      .sendMessage(tab.id as number, message)
+      .then(() => console.debug('message sent to tab', message))
+      .catch((error) => console.debug('error sending sync message', error))
+  }
 }

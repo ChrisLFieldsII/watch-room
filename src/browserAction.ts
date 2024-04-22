@@ -2,7 +2,12 @@
 import browser from 'webextension-polyfill'
 import $ from 'jquery'
 
-import { STORAGE_KEYS, getStorageValues, createRoomId } from './utils'
+import {
+  STORAGE_KEYS,
+  getStorageValues,
+  createRoomId,
+  sendMessageToTab,
+} from './utils'
 
 function renderRoomId(roomId: string) {
   const roomIdEle = $(`<p>Room ID: ${roomId}</p>`)
@@ -50,25 +55,37 @@ function renderSyncBtn() {
   const syncBtn = $('<button class="block">Sync URL</button>')
   syncBtn.prop('title', 'Sync the current tab with other users in the room')
   syncBtn.on('click', async () => {
-    console.debug('sync button clicked')
-    const tabs = await browser.tabs.query({ active: true, currentWindow: true })
-    for (const tab of tabs) {
-      console.debug('sending sync message to tab', tab)
-      browser.tabs
-        .sendMessage(tab.id as number, { type: 'sync' })
-        .then(() => console.debug('sync message sent'))
-        .catch((error) => console.debug('error sending sync message', error))
-    }
+    sendMessageToTab({ type: 'sync' })
   })
+
   $('body').append(syncBtn)
 }
 
+function renderFoundVideo(foundVideo: boolean) {
+  const foundVideoEle = $(`<p>Found Video: ${foundVideo}</p>`)
+  if (!foundVideo) {
+    const findVideoBtn = $('<button class="ml-4">Find Video</button>')
+    findVideoBtn.prop(
+      'title',
+      'Find the video element on the page for the extension to work',
+    )
+    findVideoBtn.on('click', async () => {
+      sendMessageToTab({ type: 'findVideo' })
+    })
+    foundVideoEle.append(findVideoBtn)
+  }
+
+  $('body').append(foundVideoEle)
+}
+
 async function main() {
-  const { roomId, enabled } = await getStorageValues()
+  const { roomId, enabled, foundVideo } = await getStorageValues()
 
   const roomIdEle = renderRoomId(roomId)
 
   renderEnableCheckbox(enabled)
+
+  renderFoundVideo(foundVideo)
 
   const setRoomId = async (newRoomId: string) => {
     roomIdEle.text(`Room ID: ${newRoomId}`)

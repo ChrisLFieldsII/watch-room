@@ -10,28 +10,33 @@ type VideoEventKey = keyof VideoEventMap
 
 type VideoEventHandlers = Record<VideoEventKey, () => void>
 
-interface InitParams {
+interface CtorParams {
   eventHandlers: VideoEventHandlers
   enabled: boolean
+  onFoundVideo: (didFind: boolean) => void
 }
 
 export class VideoController extends AbstractController {
   private video: JQuery<HTMLVideoElement> | null = null
 
-  findVideo() {
-    this.video = $('video')
-    return this
+  constructor(private params: CtorParams) {
+    super()
+    const { enabled } = params
+    this.setEnabled(enabled)
   }
 
-  init({ eventHandlers, enabled }: InitParams) {
-    this.setEnabled(enabled)
+  findVideo() {
+    const { eventHandlers, onFoundVideo } = this.params
 
-    this.findVideo()
+    this.video = $('video')
 
     if (!this.video?.length) {
       console.debug('No video element found')
+      onFoundVideo(false)
       return this
     }
+
+    onFoundVideo(true)
 
     this.video.on('play', () => {
       console.debug('HTML video "play" event', this.getVideoTime())

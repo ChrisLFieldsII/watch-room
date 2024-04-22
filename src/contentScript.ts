@@ -31,8 +31,11 @@ async function main() {
 
   const { roomId, enabled } = await getStorageValues()
 
-  const videoController = new VideoController().init({
+  const videoController = new VideoController({
     enabled,
+    onFoundVideo(didFind) {
+      browser.storage.local.set({ [STORAGE_KEYS.FOUND_VIDEO]: didFind })
+    },
     eventHandlers: {
       play: () => {
         emit('playVideo', { time: videoController.getVideoTime() })
@@ -41,7 +44,7 @@ async function main() {
         emit('pauseVideo', { time: videoController.getVideoTime() })
       },
     },
-  })
+  }).findVideo()
 
   const socketController = new SocketController().init({
     uri: 'http://localhost:3000', // TODO: move to env var
@@ -85,17 +88,20 @@ async function main() {
     if (message.type === 'sync') {
       emit('sync', { url: window.location.href })
     }
+    if (message.type === 'findVideo') {
+      videoController.findVideo()
+    }
   })
 }
 
 // NOTE: setTimeout is a hacky way to ensure that the content script runs after the page has loaded so it can find a video element. may need a findVideo button to manually find the video element
-setTimeout(() => {
-  main()
-    .then(() => console.debug('content script loaded'))
-    .catch((error) => console.debug('content script error', error))
-}, 3000)
+// setTimeout(() => {
+main()
+  .then(() => console.debug('content script loaded'))
+  .catch((error) => console.debug('content script error', error))
+// }, 3000)
 
 interface BrowserMessage {
-  type: 'sync'
+  type: 'sync' | 'findVideo'
   data: any
 }
