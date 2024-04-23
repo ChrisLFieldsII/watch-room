@@ -10,7 +10,7 @@ import {
   SocketEventKey,
 } from './socket.controller'
 import { VideoController } from './video.controller'
-import { STORAGE_KEYS, getStorageValues } from './utils'
+import { BrowserMessage, STORAGE_KEYS, getStorageValues } from './utils'
 
 /**
  * normally we dont want to skip the emit,
@@ -33,9 +33,6 @@ async function main() {
 
   const videoController = new VideoController({
     enabled,
-    onFoundVideo(didFind) {
-      browser.storage.local.set({ [STORAGE_KEYS.FOUND_VIDEO]: didFind })
-    },
     eventHandlers: {
       play: () => {
         emit('playVideo', { time: videoController.getVideoTime() })
@@ -83,6 +80,8 @@ async function main() {
     }
   })
 
+  let thePort: browser.Runtime.Port | null = null
+
   browser.runtime.onMessage.addListener((message: BrowserMessage) => {
     console.debug('received message', message)
     if (message.type === 'sync') {
@@ -90,7 +89,26 @@ async function main() {
     }
     if (message.type === 'findVideo') {
       videoController.findVideo()
+      thePort?.postMessage({
+        type: 'checkForVideo',
+        data: videoController.hasVideo(),
+      })
     }
+  })
+
+  browser.runtime.onConnect.addListener((port) => {
+    thePort = port
+
+    port.onMessage.addListener((message: BrowserMessage) => {
+      console.debug('port message', message)
+      if (message.type === 'checkForVideo') {
+        console.debug('checking for video element')
+        port.postMessage({
+          type: 'checkForVideo',
+          data: videoController.hasVideo(),
+        })
+      }
+    })
   })
 }
 
@@ -100,8 +118,3 @@ main()
   .then(() => console.debug('content script loaded'))
   .catch((error) => console.debug('content script error', error))
 // }, 3000)
-
-interface BrowserMessage {
-  type: 'sync' | 'findVideo'
-  data: any
-}

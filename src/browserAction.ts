@@ -7,6 +7,8 @@ import {
   getStorageValues,
   createRoomId,
   sendMessageToTab,
+  getActiveTab,
+  BrowserMessage,
 } from './utils'
 
 function renderRoomId(roomId: string) {
@@ -62,7 +64,9 @@ function renderSyncBtn() {
 }
 
 function renderFoundVideo(foundVideo: boolean) {
-  const foundVideoEle = $(`<p>Found Video: ${foundVideo}</p>`)
+  const foundVideoEle = $(
+    `<p id='foundVideoEle'>Found Video: ${foundVideo}</p>`,
+  )
   if (!foundVideo) {
     const findVideoBtn = $('<button class="ml-4">Find Video</button>')
     findVideoBtn.prop(
@@ -79,13 +83,11 @@ function renderFoundVideo(foundVideo: boolean) {
 }
 
 async function main() {
-  const { roomId, enabled, foundVideo } = await getStorageValues()
+  const { roomId, enabled } = await getStorageValues()
 
   const roomIdEle = renderRoomId(roomId)
 
   renderEnableCheckbox(enabled)
-
-  renderFoundVideo(foundVideo)
 
   const setRoomId = async (newRoomId: string) => {
     roomIdEle.text(`Room ID: ${newRoomId}`)
@@ -106,6 +108,22 @@ async function main() {
   })
 
   renderSyncBtn()
+
+  // set up 2 way connection between action and content script
+  const tab = await getActiveTab()
+  if (tab?.id !== undefined) {
+    const port = browser.tabs.connect(tab.id)
+    // post checkForVideo message to content script
+    port.postMessage({ type: 'checkForVideo' })
+
+    // listen for content script to respond
+    port.onMessage.addListener((message: BrowserMessage) => {
+      if (message.type === 'checkForVideo') {
+        $('#foundVideoEle').remove()
+        renderFoundVideo(message.data)
+      }
+    })
+  }
 }
 
 main()

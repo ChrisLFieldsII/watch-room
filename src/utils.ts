@@ -9,21 +9,18 @@ export const createRoomId = customAlphabet(alphabet, 8)
 export const STORAGE_KEYS = {
   ROOM_ID: 'roomId',
   ENABLED: 'enabled',
-  FOUND_VIDEO: 'foundVideo',
 }
 
 export async function getStorageValues() {
   const storage = (await browser.storage.local.get([
     STORAGE_KEYS.ROOM_ID,
     STORAGE_KEYS.ENABLED,
-    STORAGE_KEYS.FOUND_VIDEO,
   ])) as {
     roomId?: string
     enabled?: boolean
-    foundVideo?: boolean
   }
 
-  let { roomId, enabled = false, foundVideo = false } = storage
+  let { roomId, enabled = false } = storage
 
   // generate a room id if one doesn't exist
   if (!roomId) {
@@ -33,7 +30,7 @@ export async function getStorageValues() {
   }
   console.debug('storage', storage)
 
-  return { roomId, enabled, foundVideo }
+  return { roomId, enabled }
 }
 
 export async function sendMessageToTab(message: any) {
@@ -44,4 +41,15 @@ export async function sendMessageToTab(message: any) {
       .then(() => console.debug('message sent to tab', message))
       .catch((error) => console.debug('error sending sync message', error))
   }
+}
+
+export async function getActiveTab() {
+  const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
+  console.debug('got active tab', tab)
+  return tab
+}
+
+export interface BrowserMessage {
+  type: 'sync' | 'findVideo' | 'checkForVideo'
+  data: any
 }

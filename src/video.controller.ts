@@ -13,7 +13,6 @@ type VideoEventHandlers = Record<VideoEventKey, () => void>
 interface CtorParams {
   eventHandlers: VideoEventHandlers
   enabled: boolean
-  onFoundVideo: (didFind: boolean) => void
 }
 
 export class VideoController extends AbstractController {
@@ -25,20 +24,21 @@ export class VideoController extends AbstractController {
     this.setEnabled(enabled)
   }
 
+  hasVideo() {
+    return !!this.video?.length
+  }
+
   findVideo() {
-    const { eventHandlers, onFoundVideo } = this.params
+    const { eventHandlers } = this.params
 
     this.video = $('video')
 
     if (!this.video?.length) {
       console.debug('No video element found')
-      onFoundVideo(false)
       return this
     }
 
     console.debug('Found video element', this.video)
-
-    onFoundVideo(true)
 
     this.video.on('play', () => {
       console.debug('HTML video "play" event', this.getVideoTime())

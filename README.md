@@ -15,6 +15,5 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 
 ## TODOS
 
-- find video button is buggy. if go to tab with video and its found, then switch to tab without video, then switch back to tab with video, it says the video is not found even though it is. clicking the btn then doubles up the video events.
 - technically disabling should tear down the socket
 - so if have 2 tabs with youtube and use extension, the other tab will start playing video. should only work on active tab
