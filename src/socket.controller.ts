@@ -40,57 +40,24 @@ interface CtorParams {
 }
 
 export class SocketController extends AbstractController {
-  // @ts-expect-error - we know init will be called
   private socket: Socket<SocketEvents>
   /** the room id can change and should be pulled from here and not the ctor params */
   private roomId: string = ''
 
   constructor(private params: CtorParams) {
     super()
-    const { enabled, roomId } = params
+    const { enabled, roomId, uri, eventHandlers, userId } = params
     this.setEnabled(enabled)
     this.roomId = roomId
-  }
-
-  /**
-   * Creates the socket connection and sets up event listeners
-   */
-  openConnection = () => {
-    const { uri, eventHandlers, userId } = this.params
-    console.debug('initializing socket controller', { uri, userId })
 
     this.socket = io(uri, {
       transports: ['websocket'],
+      autoConnect: false,
     })
 
     this.socket
       .on('connect', () => {
         console.debug(`Connected to socket with id ${this.socket.id}`)
-
-        this.socket.on('events', (event) => {
-          console.debug('received event', event)
-          const { type, data } = event
-
-          if (data.userId === userId) {
-            console.debug('received event from self, ignoring...')
-            return
-          }
-          if (data.roomId !== this.roomId) {
-            console.debug('received event from different room, ignoring...')
-            return
-          }
-          if (!this.isEnabled) {
-            console.debug('socket is not enabled, ignoring event')
-            return
-          }
-
-          const handler = eventHandlers[type]
-          if (handler && isDocumentVisible()) {
-            handler(data)
-          } else {
-            console.debug(`No handler for event type ${type}`)
-          }
-        })
       })
       .on('connect_error', (error) => {
         if (this.socket.active) {
@@ -101,13 +68,54 @@ export class SocketController extends AbstractController {
         } else {
           // the connection was denied by the server
           // in that case, `socket.connect()` must be manually called in order to reconnect
-          window.alert(
+          console.debug(
             `Failed to establish socket connection to server: ${error.message}`,
           )
         }
       })
+      .on('disconnect', (reason) => {
+        console.debug('socket disconnected', reason)
+      })
+      .on('events', (event) => {
+        console.debug('received event', event)
+        const { type, data } = event
+
+        if (data.userId === userId) {
+          console.debug('received event from self, ignoring...')
+          return
+        }
+        if (data.roomId !== this.roomId) {
+          console.debug('received event from different room, ignoring...')
+          return
+        }
+        if (!this.isEnabled) {
+          console.debug('socket is not enabled, ignoring event')
+          return
+        }
+
+        const handler = eventHandlers[type]
+        if (handler && isDocumentVisible()) {
+          handler(data)
+        } else {
+          console.debug(`No handler for event type ${type}`)
+        }
+      })
+  }
+
+  /**
+   * Creates the socket connection and sets up event listeners
+   */
+  connect = () => {
+    const { uri, userId } = this.params
+    console.debug('connecting socket controller', { uri, userId })
+
+    this.socket.connect()
 
     return this
+  }
+
+  disconnect = () => {
+    this.socket.disconnect()
   }
 
   emit = <T extends SocketEventKey>(

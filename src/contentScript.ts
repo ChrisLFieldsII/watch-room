@@ -74,7 +74,7 @@ async function main() {
         }
       },
     },
-  }).openConnection()
+  }).connect()
 
   // storage change listener
   browser.storage.onChanged.addListener((changes) => {
