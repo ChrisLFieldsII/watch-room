@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import { customAlphabet } from 'nanoid'
+import { customAlphabet, nanoid } from 'nanoid'
 
 // nanoid util generator - https://zelark.github.io/nano-id-cc/
 const alphabet =
@@ -9,18 +9,21 @@ export const createRoomId = customAlphabet(alphabet, 8)
 export const STORAGE_KEYS = {
   ROOM_ID: 'roomId',
   ENABLED: 'enabled',
+  USER_ID: 'userId',
 }
 
 export async function getStorageValues() {
   const storage = (await browser.storage.local.get([
     STORAGE_KEYS.ROOM_ID,
     STORAGE_KEYS.ENABLED,
+    STORAGE_KEYS.USER_ID,
   ])) as {
     roomId?: string
     enabled?: boolean
+    userId?: string
   }
 
-  let { roomId, enabled = false } = storage
+  let { roomId, enabled = false, userId } = storage
 
   // generate a room id if one doesn't exist
   if (!roomId) {
@@ -28,9 +31,14 @@ export async function getStorageValues() {
     roomId = createRoomId()
     await browser.storage.local.set({ [STORAGE_KEYS.ROOM_ID]: roomId })
   }
-  console.debug('storage', storage)
+  if (!userId) {
+    console.debug('No userId found in storage, generating one...')
+    userId = nanoid()
+    await browser.storage.local.set({ [STORAGE_KEYS.USER_ID]: userId })
+  }
+  console.debug('storage', { roomId, enabled, userId })
 
-  return { roomId, enabled }
+  return { roomId, enabled, userId }
 }
 
 export async function sendMessageToTab(message: any) {

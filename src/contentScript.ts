@@ -19,6 +19,8 @@ import { BrowserMessage, STORAGE_KEYS, getStorageValues } from './utils'
 let skipEmit = false
 
 async function main() {
+  const { userId } = await getStorageValues()
+
   /**
    * helper to handle skipEmit logic
    */
@@ -46,7 +48,7 @@ async function main() {
   const socketController = new SocketController().init({
     uri: 'http://localhost:3000', // TODO: move to env var
     enabled,
-    userId: nanoid(),
+    userId,
     roomId,
     eventHandlers: {
       playVideo: (data: SocketEventData<'playVideo'>) => {
