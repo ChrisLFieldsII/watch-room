@@ -33,7 +33,7 @@ export class VideoController extends AbstractController {
 
     this.video = $('video')
 
-    if (!this.video?.length) {
+    if (!this.hasVideo()) {
       console.debug('No video element found')
       return this
     }
