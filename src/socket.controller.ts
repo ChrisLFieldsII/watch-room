@@ -55,7 +55,7 @@ export class SocketController extends AbstractController {
   /**
    * Creates the socket connection and sets up event listeners
    */
-  init = () => {
+  openConnection = () => {
     const { uri, eventHandlers, userId } = this.params
     console.debug('initializing socket controller', { uri, userId })
 
