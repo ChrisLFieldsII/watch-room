@@ -76,6 +76,7 @@ async function main() {
     },
   }).openConnection()
 
+  // storage change listener
   browser.storage.onChanged.addListener((changes) => {
     console.debug('storage changed', changes)
     if (changes[STORAGE_KEYS.ROOM_ID]) {
@@ -90,6 +91,7 @@ async function main() {
 
   let thePort: browser.Runtime.Port | null = null
 
+  // 1-way message listener. listens for msgs from the extension popup
   browser.runtime.onMessage.addListener((message: BrowserMessage) => {
     console.debug('received message', message)
     if (message.type === 'sync') {
@@ -104,6 +106,7 @@ async function main() {
     }
   })
 
+  // 2-way connection between popup and content script
   browser.runtime.onConnect.addListener((port) => {
     thePort = port
 
