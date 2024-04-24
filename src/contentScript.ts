@@ -10,7 +10,12 @@ import {
   SocketEventKey,
 } from './socket.controller'
 import { VideoController } from './video.controller'
-import { BrowserMessage, STORAGE_KEYS, getStorageValues } from './utils'
+import {
+  BrowserMessage,
+  STORAGE_KEYS,
+  getStorageValues,
+  isDocumentVisible,
+} from './utils'
 
 /**
  * normally we dont want to skip the emit,
@@ -65,7 +70,7 @@ async function main() {
       sync: async (data: SocketEventData<'sync'>) => {
         skipEmit = true
 
-        if (document.visibilityState === 'visible') {
+        if (isDocumentVisible()) {
           videoController.sync(data.url)
         }
       },

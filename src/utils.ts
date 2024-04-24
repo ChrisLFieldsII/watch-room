@@ -61,3 +61,8 @@ export interface BrowserMessage {
   type: 'sync' | 'findVideo' | 'checkForVideo'
   data: any
 }
+
+/** akin to is tab visible. used in content scripts. use tabs.query in action/background scripts */
+export function isDocumentVisible() {
+  return document.visibilityState === 'visible'
+}

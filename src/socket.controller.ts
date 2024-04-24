@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client'
 import { AbstractController } from './abstract.controller'
+import { isDocumentVisible } from './utils'
 
 interface SocketEventMap {
   playVideo: { time: number }
@@ -80,7 +81,7 @@ export class SocketController extends AbstractController {
           }
 
           const handler = eventHandlers[type]
-          if (handler) {
+          if (handler && isDocumentVisible()) {
             handler(data)
           } else {
             console.debug(`No handler for event type ${type}`)
