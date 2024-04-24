@@ -16,4 +16,3 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 ## TODOS
 
 - technically disabling should tear down the socket
-- so if have 2 tabs with youtube and use extension, the other tab will start playing video. should only work on active tab
