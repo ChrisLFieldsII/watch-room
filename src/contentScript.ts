@@ -50,7 +50,7 @@ async function main() {
     },
   }).findVideo()
 
-  const socketController = new SocketController().init({
+  const socketController = new SocketController({
     uri: 'http://localhost:3000', // TODO: move to env var
     enabled,
     userId,
@@ -75,7 +75,7 @@ async function main() {
         }
       },
     },
-  })
+  }).init()
 
   browser.storage.onChanged.addListener((changes) => {
     console.debug('storage changed', changes)

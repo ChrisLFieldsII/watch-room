@@ -31,7 +31,7 @@ interface SocketEvents {
   }) => void
 }
 
-interface InitParams {
+interface CtorParams {
   uri: string
   userId: string
   roomId: string
@@ -45,10 +45,17 @@ export class SocketController extends AbstractController {
   private userId: string = ''
   private roomId: string = ''
 
+  constructor(private params: CtorParams) {
+    super()
+    const { enabled } = params
+    this.setEnabled(enabled)
+  }
+
   /**
    * Creates the socket connection and sets up event listeners
    */
-  init = ({ uri, eventHandlers, userId, roomId, enabled }: InitParams) => {
+  init = () => {
+    const { uri, eventHandlers, userId, roomId, enabled } = this.params
     console.debug('initializing socket controller', { uri, userId })
 
     this.userId = userId
