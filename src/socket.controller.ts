@@ -42,25 +42,22 @@ interface CtorParams {
 export class SocketController extends AbstractController {
   // @ts-expect-error - we know init will be called
   private socket: Socket<SocketEvents>
-  private userId: string = ''
+  /** the room id can change and should be pulled from here and not the ctor params */
   private roomId: string = ''
 
   constructor(private params: CtorParams) {
     super()
-    const { enabled } = params
+    const { enabled, roomId } = params
     this.setEnabled(enabled)
+    this.roomId = roomId
   }
 
   /**
    * Creates the socket connection and sets up event listeners
    */
   init = () => {
-    const { uri, eventHandlers, userId, roomId, enabled } = this.params
+    const { uri, eventHandlers, userId } = this.params
     console.debug('initializing socket controller', { uri, userId })
-
-    this.userId = userId
-    this.roomId = roomId
-    this.setEnabled(enabled)
 
     this.socket = io(uri, {
       transports: ['websocket'],
@@ -122,7 +119,7 @@ export class SocketController extends AbstractController {
       console.debug('emitting event', type, data)
       this.socket.emit('events', {
         type,
-        data: { ...data, userId: this.userId, roomId: this.roomId },
+        data: { ...data, userId: this.params.userId, roomId: this.roomId },
       })
     }
     return this
