@@ -60,10 +60,12 @@ async function main() {
 
         videoController.pause(data.time)
       },
-      sync: (data: SocketEventData<'sync'>) => {
+      sync: async (data: SocketEventData<'sync'>) => {
         skipEmit = true
 
-        videoController.sync(data.url)
+        if (document.visibilityState === 'visible') {
+          videoController.sync(data.url)
+        }
       },
     },
   })
