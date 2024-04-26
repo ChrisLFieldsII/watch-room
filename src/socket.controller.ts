@@ -46,9 +46,9 @@ export class SocketController extends AbstractController {
 
   constructor(private params: CtorParams) {
     super()
-    const { enabled, roomId, uri, eventHandlers, userId } = params
+    const { enabled, uri, eventHandlers, userId } = params
     this.setEnabled(enabled)
-    this.roomId = roomId
+    this.roomId = params.roomId // should only be using this.roomId after this line
 
     this.socket = io(uri, {
       transports: ['websocket'],
