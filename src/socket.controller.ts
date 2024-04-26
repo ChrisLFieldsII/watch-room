@@ -47,7 +47,7 @@ export class SocketController extends AbstractController {
   constructor(private params: CtorParams) {
     super()
     const { enabled, uri, eventHandlers, userId } = params
-    this.setEnabled(enabled)
+
     this.roomId = params.roomId // should only be using this.roomId after this line
 
     this.socket = io(uri, {
@@ -100,6 +100,19 @@ export class SocketController extends AbstractController {
           console.debug(`No handler for event type ${type}`)
         }
       })
+
+    // must be called last as it depends on socket being setup
+    this.setEnabled(enabled)
+  }
+
+  setEnabled(enabled: boolean): this {
+    super.setEnabled(enabled)
+    if (enabled) {
+      this.connect()
+    } else {
+      this.disconnect()
+    }
+    return this
   }
 
   /**

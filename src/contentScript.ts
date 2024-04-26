@@ -47,7 +47,7 @@ async function main() {
         emit('pauseVideo', { time: videoController.getVideoTime() })
       },
     },
-  }).findVideo()
+  })
 
   const socketController = new SocketController({
     uri: 'http://localhost:3000', // TODO: move to env var
@@ -74,7 +74,7 @@ async function main() {
         }
       },
     },
-  }).connect()
+  })
 
   // storage change listener
   browser.storage.onChanged.addListener((changes) => {
@@ -123,6 +123,11 @@ async function main() {
   })
 }
 
-main()
-  .then(() => console.debug('content script loaded'))
-  .catch((error) => console.debug('content script error', error))
+/** this delay helps the page and hopefully video load before trying to inject the content script */
+const DELAY_SEC = 5
+
+setTimeout(() => {
+  main()
+    .then(() => console.debug('content script loaded'))
+    .catch((error) => console.debug('content script error', error))
+}, 1000 * DELAY_SEC)

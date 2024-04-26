@@ -15,4 +15,4 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 
 ## TODOS
 
-- technically disabling should tear down the socket
+- make action look pretty

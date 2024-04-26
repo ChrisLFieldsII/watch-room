@@ -24,6 +24,19 @@ export class VideoController extends AbstractController {
     this.setEnabled(enabled)
   }
 
+  setEnabled(enabled: boolean): this {
+    super.setEnabled(enabled)
+
+    if (enabled) {
+      this.findVideo()
+    } else {
+      this.video?.off('play.cfiiMediaSync pause.cfiiMediaSync')
+      this.video = null
+    }
+
+    return this
+  }
+
   hasVideo() {
     return !!this.video?.length
   }
@@ -40,7 +53,7 @@ export class VideoController extends AbstractController {
 
     console.debug('Found video element', this.video)
 
-    this.video.on('play', () => {
+    this.video.on('play.cfiiMediaSync', () => {
       console.debug('HTML video "play" event', this.getVideoTime())
 
       if (!this.isEnabled) {
@@ -51,7 +64,7 @@ export class VideoController extends AbstractController {
       eventHandlers.play()
     })
 
-    this.video.on('pause', () => {
+    this.video.on('pause.cfiiMediaSync', () => {
       console.debug('HTML video "pause" event', this.getVideoTime())
 
       if (!this.isEnabled) {
