@@ -82,10 +82,31 @@ function renderFoundVideo(foundVideo: boolean) {
   $('body').append(foundVideoEle)
 }
 
+function hookupCopyRoomId() {
+  const roomIdContainer = $('#room-id-container')
+  roomIdContainer.on('click', async () => {
+    try {
+      const roomId = $('#room-id').text()
+      navigator.clipboard.writeText(roomId)
+      const copyIcon = $('#copy-icon')
+      const checkIcon = $('#check-icon')
+      copyIcon.addClass('hidden')
+      checkIcon.removeClass('hidden')
+      setTimeout(() => {
+        copyIcon.removeClass('hidden')
+        checkIcon.addClass('hidden')
+      }, 2000)
+    } catch (error) {
+      console.error('Error copying to clipboard', error)
+    }
+  })
+}
+
 async function main() {
   const { roomId, enabled } = await getStorageValues()
 
   const roomIdEle = renderRoomId(roomId)
+  hookupCopyRoomId()
 
   renderEnableCheckbox(enabled)
 

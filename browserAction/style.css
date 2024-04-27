@@ -47,7 +47,7 @@ body {
   font-size: 18px;
 }
 
-#copy-btn {
+.icon {
   width: 14px;
   height: 14px;
   fill: #74c0fc;
@@ -81,4 +81,8 @@ body {
 
 .text-light {
   color: #edf2f7;
+}
+
+.hidden {
+  display: none;
 }
