@@ -12,8 +12,8 @@ import {
 } from './utils'
 
 function renderRoomId(roomId: string) {
-  const roomIdEle = $(`<p>Room ID: ${roomId}</p>`)
-  $('body').append(roomIdEle)
+  const roomIdEle = $('#room-id')
+  roomIdEle.text(roomId)
   return roomIdEle
 }
 
@@ -90,7 +90,7 @@ async function main() {
   renderEnableCheckbox(enabled)
 
   const setRoomId = async (newRoomId: string) => {
-    roomIdEle.text(`Room ID: ${newRoomId}`)
+    roomIdEle.text(newRoomId)
     await browser.storage.local.set({ [STORAGE_KEYS.ROOM_ID]: newRoomId })
   }
 
