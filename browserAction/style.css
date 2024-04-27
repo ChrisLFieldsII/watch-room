@@ -1,5 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+html {
+  min-width: 300px;
+}
+
+body {
+  margin: 0px !important;
+  border-radius: 5px;
+}
+
 .block {
   display: block;
+}
+
+.p-4 {
+  padding: 4px;
 }
 
 .mr-4 {
@@ -8,4 +23,62 @@
 
 .ml-4 {
   margin-left: 4px;
+}
+
+.roboto-light {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.roboto-regular {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.roboto-bold {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.room-id {
+  font-size: 18px;
+}
+
+#copy-btn {
+  width: 14px;
+  height: 14px;
+  fill: #74c0fc;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.center {
+  justify-content: center;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.bg-light {
+  background-color: #323542;
+}
+
+.bg-dark {
+  background-color: rgba(27, 27, 34, 1);
+}
+
+.debug {
+  border: 1px solid red;
+}
+
+.text-light {
+  color: #edf2f7;
 }

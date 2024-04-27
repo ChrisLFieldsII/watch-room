@@ -16,3 +16,5 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 ## TODOS
 
 - make action look pretty
+- add donation page
+- websockets should be in a background script/service worker
