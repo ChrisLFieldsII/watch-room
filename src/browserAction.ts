@@ -17,19 +17,6 @@ function renderRoomId(roomId: string) {
   return roomIdEle
 }
 
-function renderEnableCheckbox(enabled: boolean = false) {
-  const enableCheckbox = $('<input type="checkbox" />')
-  const enableLabel = $('<label>Enable Sync</label>')
-  enableLabel.prepend(enableCheckbox)
-  $('body').append(enableLabel)
-  enableCheckbox.prop('checked', enabled)
-  enableCheckbox.on('change', () => {
-    const checked = enableCheckbox.prop('checked')
-    console.debug('Enable checkbox changed', checked)
-    browser.storage.local.set({ [STORAGE_KEYS.ENABLED]: checked })
-  })
-}
-
 function renderCreateRoomBtn({ onClick }: { onClick: Function }) {
   const createBtn = $('<button class="block">Create New Room</button>')
   createBtn.on('click', async () => {
@@ -102,13 +89,43 @@ function hookupCopyRoomId() {
   })
 }
 
+function renderSyncEnabled(enabled: boolean) {
+  const syncEnabledEle = $('#power-icon')
+
+  const enable = () => {
+    syncEnabledEle.removeClass('power-icon-off')
+    syncEnabledEle.addClass('power-icon-on')
+  }
+  const disable = () => {
+    syncEnabledEle.removeClass('power-icon-on')
+    syncEnabledEle.addClass('power-icon-off')
+  }
+
+  if (enabled) {
+    enable()
+  } else {
+    disable()
+  }
+
+  syncEnabledEle.on('click', async () => {
+    const newEnabled = !syncEnabledEle.hasClass('power-icon-on')
+    console.debug('Sync enabled clicked', newEnabled)
+    browser.storage.local.set({ [STORAGE_KEYS.ENABLED]: newEnabled })
+    if (newEnabled) {
+      enable()
+    } else {
+      disable()
+    }
+  })
+}
+
 async function main() {
   const { roomId, enabled } = await getStorageValues()
 
   const roomIdEle = renderRoomId(roomId)
   hookupCopyRoomId()
 
-  renderEnableCheckbox(enabled)
+  renderSyncEnabled(enabled)
 
   const setRoomId = async (newRoomId: string) => {
     roomIdEle.text(newRoomId)
