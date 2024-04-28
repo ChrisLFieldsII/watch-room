@@ -2,18 +2,13 @@
 
 import browser from 'webextension-polyfill'
 
-import {
-  SocketController,
-  SocketEventData,
-  RawSocketEventData,
-  SocketEventKey,
-} from './socket.controller'
 import { VideoController } from './video.controller'
 import {
   BrowserMessage,
   STORAGE_KEYS,
   getStorageValues,
   isDocumentVisible,
+  sendBrowserMessage,
 } from './utils'
 
 /**
@@ -22,56 +17,36 @@ import {
  */
 let skipEmit = false
 
-async function main() {
-  const { userId } = await getStorageValues()
-
-  /**
-   * helper to handle skipEmit logic
-   */
-  function emit<T extends SocketEventKey>(key: T, data: RawSocketEventData<T>) {
-    socketController.emit(key, data, skipEmit)
-
-    // NOTE: must ensure that we reset the skipEmit flag after emitting the event
+/**
+ * helper to handle skipEmit logic
+ */
+function sendBrowserMessageWrapper(message: BrowserMessage) {
+  if (skipEmit) {
     skipEmit = false
+    return
   }
 
-  const { roomId, enabled } = await getStorageValues()
+  sendBrowserMessage(message)
+}
 
+async function main() {
+  const { enabled } = await getStorageValues()
+
+  // video controller sends messages to the service worker for the socket to emit
   const videoController = new VideoController({
     enabled,
     eventHandlers: {
       play: () => {
-        emit('playVideo', { time: videoController.getVideoTime() })
+        sendBrowserMessageWrapper({
+          type: 'play',
+          data: { time: videoController.getVideoTime() },
+        })
       },
       pause: () => {
-        emit('pauseVideo', { time: videoController.getVideoTime() })
-      },
-    },
-  })
-
-  const socketController = new SocketController({
-    uri: 'http://localhost:3000', // TODO: move to env var
-    enabled,
-    userId,
-    roomId,
-    eventHandlers: {
-      playVideo: (data: SocketEventData<'playVideo'>) => {
-        // dont want to emit b/c below play call will trigger the VideoController play event which would emit the play event again
-        skipEmit = true
-
-        videoController.play(data.time)
-      },
-      pauseVideo: (data: SocketEventData<'pauseVideo'>) => {
-        skipEmit = true
-
-        videoController.pause(data.time)
-      },
-      sync: async (data: SocketEventData<'sync'>) => {
-        skipEmit = true
-
-        if (isDocumentVisible()) {
-          videoController.sync(data.url)
-        }
+        sendBrowserMessageWrapper({
+          type: 'pause',
+          data: { time: videoController.getVideoTime() },
+        })
       },
     },
   })
@@ -79,12 +54,9 @@ async function main() {
   // storage change listener
   browser.storage.onChanged.addListener((changes) => {
     console.debug('storage changed', changes)
-    if (changes[STORAGE_KEYS.ROOM_ID]) {
-      socketController.setRoomId(changes.roomId.newValue)
-    }
+
     if (changes[STORAGE_KEYS.ENABLED]) {
       const isEnabled = changes.enabled.newValue as boolean
-      socketController.setEnabled(isEnabled)
       videoController.setEnabled(isEnabled)
     }
   })
@@ -93,16 +65,42 @@ async function main() {
 
   // 1-way message listener. listens for msgs from the extension popup
   browser.runtime.onMessage.addListener((message: BrowserMessage) => {
-    console.debug('received message', message)
-    if (message.type === 'sync') {
-      emit('sync', { url: window.location.href })
+    if (!isDocumentVisible()) {
+      console.debug('received message but document is not visible', message)
+      return
     }
-    if (message.type === 'findVideo') {
+
+    console.debug('received browser message in content script', message)
+    const { type, data = {} } = message
+
+    // service worker messages will include whether we should skipEmit or not
+    skipEmit = data.skipEmit || false
+
+    if (type === 'findVideo') {
       videoController.findVideo()
       thePort?.postMessage({
         type: 'checkForVideo',
         data: videoController.hasVideo(),
       })
+    }
+    if (type === 'play') {
+      videoController.play(data.time)
+    }
+    if (type === 'pause') {
+      videoController.pause(data.time)
+    }
+    if (type === 'sync') {
+      // received msg from popup, send it to background script for socket to emit
+      if (!data.url) {
+        sendBrowserMessageWrapper({
+          type: 'sync',
+          data: { url: window.location.href },
+        })
+      }
+      // received msg from service worker socket event, sync the video
+      else {
+        videoController.sync(data.url)
+      }
     }
   })
 
@@ -124,7 +122,7 @@ async function main() {
 }
 
 /** this delay helps the page and hopefully video load before trying to inject the content script */
-const DELAY_SEC = 5
+const DELAY_SEC = 2
 
 setTimeout(() => {
   main()

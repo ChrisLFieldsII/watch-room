@@ -1,17 +1,15 @@
 const path = require('path')
 // const CopyPlugin = require('copy-webpack-plugin')
 
+const resolve = (filename) =>
+  path.resolve(__dirname, '..', 'src', `${filename}.ts`)
+
 module.exports = {
   mode: 'production',
   entry: {
-    backgroundScript: path.resolve(
-      __dirname,
-      '..',
-      'src',
-      'backgroundScript.ts',
-    ),
-    contentScript: path.resolve(__dirname, '..', 'src', 'contentScript.ts'),
-    browserAction: path.resolve(__dirname, '..', 'src', 'browserAction.ts'),
+    contentScript: resolve('contentScript'),
+    browserAction: resolve('browserAction'),
+    serviceWorker: resolve('serviceWorker'),
   },
   output: {
     path: path.join(__dirname, '../dist'),

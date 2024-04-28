@@ -26,6 +26,7 @@ export class VideoController extends AbstractController {
 
   setEnabled(enabled: boolean): this {
     super.setEnabled(enabled)
+    console.debug('video controller set enabled', enabled)
 
     if (enabled) {
       this.findVideo()

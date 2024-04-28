@@ -6,6 +6,7 @@ interface SocketEventMap {
   playVideo: { time: number }
   pauseVideo: { time: number }
   sync: { url: string }
+  heartbeat: {}
 }
 
 export type SocketEventKey = keyof SocketEventMap
@@ -33,25 +34,23 @@ interface SocketEvents {
 
 interface CtorParams {
   uri: string
-  userId: string
-  roomId: string
   eventHandlers: SocketEventHandlers
-  enabled: boolean
+  transports?: string[]
 }
 
 export class SocketController extends AbstractController {
   private socket: Socket<SocketEvents>
   /** the room id can change and should be pulled from here and not the ctor params */
   private roomId: string = ''
+  private userId: string = ''
+  private heartbeatInterval: NodeJS.Timeout | null = null
 
   constructor(private params: CtorParams) {
     super()
-    const { enabled, uri, eventHandlers, userId } = params
-
-    this.roomId = params.roomId // should only be using this.roomId after this line
+    const { uri, eventHandlers } = params
 
     this.socket = io(uri, {
-      transports: ['websocket'],
+      transports: params.transports,
       autoConnect: false,
     })
 
@@ -80,7 +79,7 @@ export class SocketController extends AbstractController {
         console.debug('received event', event)
         const { type, data } = event
 
-        if (data.userId === userId) {
+        if (data.userId === this.userId) {
           console.debug('received event from self, ignoring...')
           return
         }
@@ -94,19 +93,17 @@ export class SocketController extends AbstractController {
         }
 
         const handler = eventHandlers[type]
-        if (handler && isDocumentVisible()) {
+        if (handler) {
           handler(data)
         } else {
           console.debug(`No handler for event type ${type}`)
         }
       })
-
-    // must be called last as it depends on socket being setup
-    this.setEnabled(enabled)
   }
 
   setEnabled(enabled: boolean): this {
     super.setEnabled(enabled)
+    console.debug('socket controller set enabled', enabled)
     if (enabled) {
       this.connect()
     } else {
@@ -119,16 +116,15 @@ export class SocketController extends AbstractController {
    * Creates the socket connection and sets up event listeners
    */
   connect = () => {
-    const { uri, userId } = this.params
-    console.debug('connecting socket controller', { uri, userId })
-
+    console.debug('connecting to socket...')
     this.socket.connect()
-
     return this
   }
 
   disconnect = () => {
+    console.debug('disconnecting from socket...')
     this.socket.disconnect()
+    return this
   }
 
   emit = <T extends SocketEventKey>(
@@ -140,7 +136,7 @@ export class SocketController extends AbstractController {
       console.debug('emitting event', type, data)
       this.socket.emit('events', {
         type,
-        data: { ...data, userId: this.params.userId, roomId: this.roomId },
+        data: { ...data, userId: this.userId, roomId: this.roomId },
       })
     }
     return this
@@ -149,5 +145,47 @@ export class SocketController extends AbstractController {
   setRoomId = (roomId: string) => {
     this.roomId = roomId
     return this
+  }
+
+  setUserId = (userId: string) => {
+    this.userId = userId
+    return this
+  }
+
+  isConnected() {
+    return this.socket.connected
+  }
+
+  /**
+   * helps keep service worker alive so it doesnt kill websocket
+   * https://github.com/GoogleChrome/chrome-extensions-samples/blob/main/functional-samples/tutorial.websockets/service-worker.js
+   * https://developer.chrome.com/docs/extensions/how-to/web-platform/websockets
+   * TODO: decide whether to use this or not
+   */
+  startHeartbeat() {
+    if (this.heartbeatInterval) {
+      console.debug('heartbeat already started')
+      return
+    }
+
+    this.heartbeatInterval = setInterval(
+      () => {
+        if (!this.isConnected()) {
+          console.debug('socket is not connected, skipping heartbeat')
+          return
+        }
+
+        this.emit('heartbeat', { time: Date.now() }, true)
+      },
+      // heartbeat every 20 seconds to keep service worker alive since it dies after 30 seconds of inactivity
+      1000 * 20,
+    )
+  }
+
+  stopHeartbeat() {
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval)
+      this.heartbeatInterval = null
+    }
   }
 }

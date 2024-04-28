@@ -1,4 +1,4 @@
-import browser from 'webextension-polyfill'
+import browserPolyfill from 'webextension-polyfill'
 import { customAlphabet, nanoid } from 'nanoid'
 
 // nanoid util generator - https://zelark.github.io/nano-id-cc/
@@ -13,7 +13,7 @@ export const STORAGE_KEYS = {
 }
 
 export async function getStorageValues() {
-  const storage = (await browser.storage.local.get([
+  const storage = (await browserPolyfill.storage.local.get([
     STORAGE_KEYS.ROOM_ID,
     STORAGE_KEYS.ENABLED,
     STORAGE_KEYS.USER_ID,
@@ -29,40 +29,66 @@ export async function getStorageValues() {
   if (!roomId) {
     console.debug('No roomId found in storage, generating one...')
     roomId = createRoomId()
-    await browser.storage.local.set({ [STORAGE_KEYS.ROOM_ID]: roomId })
+    await browserPolyfill.storage.local.set({ [STORAGE_KEYS.ROOM_ID]: roomId })
   }
   if (!userId) {
     console.debug('No userId found in storage, generating one...')
     userId = nanoid()
-    await browser.storage.local.set({ [STORAGE_KEYS.USER_ID]: userId })
+    await browserPolyfill.storage.local.set({ [STORAGE_KEYS.USER_ID]: userId })
   }
   console.debug('storage', { roomId, enabled, userId })
 
   return { roomId, enabled, userId }
 }
 
-export async function sendMessageToTab(message: any) {
-  const tabs = await browser.tabs.query({ active: true, currentWindow: true })
-  for (const tab of tabs) {
-    browser.tabs
-      .sendMessage(tab.id as number, message)
-      .then(() => console.debug('message sent to tab', message))
-      .catch((error) => console.debug('error sending sync message', error))
+export async function sendMessageToTab(message: BrowserMessage) {
+  try {
+    const tab = await getActiveTab()
+
+    if (!tab || !tab.id) throw new Error('No active tab found to send msg')
+
+    browserPolyfill.tabs.sendMessage(tab.id, message)
+    console.debug('message sent to tab', message)
+  } catch (error) {
+    console.debug('error sending sync message', error, message)
   }
 }
 
 export async function getActiveTab() {
-  const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
-  console.debug('got active tab', tab)
+  const [tab] = await browserPolyfill.tabs.query({
+    active: true,
+    currentWindow: true,
+  })
   return tab
 }
 
+export async function sendBrowserMessage(message: BrowserMessage) {
+  try {
+    console.debug('sending browser message', message)
+    await browserPolyfill.runtime.sendMessage(message)
+  } catch (error) {
+    console.debug('error sending browser message', error, message)
+  }
+}
+
 export interface BrowserMessage {
-  type: 'sync' | 'findVideo' | 'checkForVideo'
-  data: any
+  type: 'sync' | 'findVideo' | 'checkForVideo' | 'play' | 'pause'
+  data?: any
 }
 
 /** akin to is tab visible. used in content scripts. use tabs.query in action/background scripts */
 export function isDocumentVisible() {
   return document.visibilityState === 'visible'
+}
+
+export function getBrowser() {
+  // @ts-ignore
+  if (typeof chrome !== 'undefined') {
+    // @ts-ignore
+    if (typeof browser !== 'undefined') {
+      return 'Firefox'
+    } else {
+      return 'Chrome'
+    }
+  }
 }

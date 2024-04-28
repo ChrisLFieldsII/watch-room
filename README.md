@@ -25,4 +25,4 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 
 - make action look pretty
 - add donation page
-- websockets should be in a background script/service worker
+- messaging system isnt really typed well at the moment
