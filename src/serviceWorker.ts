@@ -30,6 +30,9 @@ const socketController = new SocketController({
     sync: async (data: SocketEventData<'sync'>) => {
       sendMessageToTab({ type: 'sync', data: { ...data, skipEmit: true } })
     },
+    heartbeat: () => {
+      console.debug('received heartbeat')
+    },
   },
 })
 
