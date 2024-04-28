@@ -18,11 +18,10 @@ function renderRoomId(roomId: string) {
 }
 
 function renderCreateRoomBtn({ onClick }: { onClick: Function }) {
-  const createBtn = $('<button class="block">Create New Room</button>')
+  const createBtn = $('#create-room-btn')
   createBtn.on('click', async () => {
     onClick()
   })
-  $('body').append(createBtn)
 }
 
 function renderJoinRoomInput({
