@@ -52,6 +52,10 @@ hr {
   padding: 4px;
 }
 
+.px-16 {
+  padding: 0px 16px;
+}
+
 .mr-4 {
   margin-right: 4px;
 }
@@ -112,6 +116,23 @@ hr {
 
 .btn:active {
   opacity: 0.8;
+}
+
+.input-btn {
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.input-btn:active {
+  opacity: 0.8;
+}
+
+.input {
+  padding: 8px;
+  border-radius: 8px;
 }
 /* #endregion elements */
 

@@ -29,14 +29,11 @@ function renderJoinRoomInput({
 }: {
   onClick: (roomId: string) => void
 }) {
-  const joinInput = $(
-    '<input type="text" placeholder="Enter Room ID to join" />',
-  )
-  const joinBtn = $('<button>Join Room</button>')
+  const joinInput = $('#join-room-input')
+  const joinBtn = $('#join-room-btn')
   joinBtn.on('click', async () => {
     onClick(joinInput.val() as string)
   })
-  $('body').append(joinInput).append(joinBtn)
 }
 
 function renderSyncBtn() {
