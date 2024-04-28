@@ -81,6 +81,7 @@ export function isDocumentVisible() {
   return document.visibilityState === 'visible'
 }
 
+// https://stackoverflow.com/a/45985333/5434172
 export function getBrowser() {
   // @ts-ignore
   if (typeof chrome !== 'undefined') {

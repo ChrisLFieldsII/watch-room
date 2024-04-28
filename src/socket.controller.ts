@@ -76,7 +76,7 @@ export class SocketController extends AbstractController {
         console.debug('socket disconnected', reason)
       })
       .on('events', (event) => {
-        console.debug('received event', event)
+        console.debug('socket received event', event)
         const { type, data } = event
 
         if (data.userId === this.userId) {
