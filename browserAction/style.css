@@ -105,20 +105,21 @@ hr {
   fill: var(--danger-color);
 }
 
-.btn {
+.btn-block {
   background-color: var(--primary-color);
   border-radius: 16px;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
   transition: 0.3s;
+  width: 100%;
 }
 
-.btn:active {
+.btn-block:active {
   opacity: 0.8;
 }
 
-.input-btn {
+.btn-input {
   background-color: var(--primary-color);
   border: none;
   border-radius: 8px;
@@ -126,7 +127,7 @@ hr {
   cursor: pointer;
   transition: 0.3s;
 }
-.input-btn:active {
+.btn-input:active {
   opacity: 0.8;
 }
 
