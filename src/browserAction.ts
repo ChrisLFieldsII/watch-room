@@ -36,7 +36,9 @@ function renderJoinRoomInput({
   const joinInput = $('#join-room-input')
   const joinBtn = $('#join-room-btn')
   joinBtn.on('click', async () => {
-    onClick(joinInput.val() as string)
+    const newRoomId = joinInput.val() as string
+    if (!newRoomId) return
+    onClick(newRoomId)
   })
 }
 
