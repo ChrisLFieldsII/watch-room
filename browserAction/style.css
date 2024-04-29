@@ -48,6 +48,10 @@ hr {
 /* #endregion utility */
 
 /* #region spacing */
+.p-2 {
+  padding: 2px;
+}
+
 .p-4 {
   padding: 4px;
 }
@@ -62,6 +66,10 @@ hr {
 
 .ml-4 {
   margin-left: 4px;
+}
+
+.ml-16 {
+  margin-left: 16px;
 }
 
 .mt-16 {
@@ -123,7 +131,7 @@ hr {
   opacity: 0.8;
 }
 
-.btn-input {
+.btn-inline {
   background-color: var(--primary-color);
   border: none;
   border-radius: 8px;
@@ -131,7 +139,7 @@ hr {
   cursor: pointer;
   transition: 0.3s;
 }
-.btn-input:active {
+.btn-inline:active {
   opacity: 0.8;
 }
 

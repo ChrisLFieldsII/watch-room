@@ -13,6 +13,7 @@ import {
 } from './utils'
 
 const extensionPort = browser.runtime.connect()
+let tabPort: browser.Runtime.Port | null = null
 
 function renderRoomId(roomId: string) {
   const roomIdEle = $('#room-id')
@@ -98,6 +99,8 @@ function renderSyncEnabled(enabled: boolean) {
       extensionPort.postMessage({
         type: 'getSocketStatus',
       } satisfies BrowserMessage)
+
+      tabPort?.postMessage({ type: 'checkForVideo' })
     }, 1000)
   })
 }
@@ -115,16 +118,26 @@ function renderSocketStatus(isConnected: boolean) {
   }
 }
 
-function renderVideoStatus(foundVideo: boolean) {
+function renderVideoStatus(foundVideo: boolean, isExtensionEnabled: boolean) {
   const iconOff = $('#video-status-icon-off')
   const iconOn = $('#video-status-icon-on')
+  const findVideoBtn = $('#find-video-btn')
 
   if (foundVideo) {
     iconOff.addClass('hidden')
     iconOn.removeClass('hidden')
+    findVideoBtn.addClass('hidden')
   } else {
     iconOff.removeClass('hidden')
     iconOn.addClass('hidden')
+
+    // extension is enabled but no video found, render button to try and find it
+    if (isExtensionEnabled) {
+      findVideoBtn.removeClass('hidden')
+      findVideoBtn.on('click', async () => {
+        sendMessageToTab({ type: 'findVideo' })
+      })
+    }
   }
 }
 
@@ -159,14 +172,14 @@ async function main() {
   // set up 2 way connection between action and content script
   const tab = await getActiveTab()
   if (tab?.id !== undefined) {
-    const port = browser.tabs.connect(tab.id)
+    tabPort = browser.tabs.connect(tab.id)
     // post checkForVideo message to content script
-    port.postMessage({ type: 'checkForVideo' })
+    tabPort.postMessage({ type: 'checkForVideo' })
 
     // listen for content script to respond
-    port.onMessage.addListener((message: BrowserMessage) => {
+    tabPort.onMessage.addListener((message: BrowserMessage) => {
       if (message.type === 'checkForVideo') {
-        renderVideoStatus(message.data)
+        renderVideoStatus(message.data, enabled)
       }
     })
   }
