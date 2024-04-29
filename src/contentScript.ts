@@ -109,9 +109,9 @@ async function main() {
     thePort = port
 
     port.onMessage.addListener((message: BrowserMessage) => {
-      console.debug('port message', message)
+      console.debug('content script received port message', message)
+
       if (message.type === 'checkForVideo') {
-        console.debug('checking for video element')
         port.postMessage({
           type: 'checkForVideo',
           data: videoController.hasVideo(),

@@ -9,7 +9,10 @@ import {
   sendMessageToTab,
   getActiveTab,
   BrowserMessage,
+  GetSocketStatusData,
 } from './utils'
+
+const extensionPort = browser.runtime.connect()
 
 function renderRoomId(roomId: string) {
   const roomIdEle = $('#room-id')
@@ -112,7 +115,23 @@ function renderSyncEnabled(enabled: boolean) {
     } else {
       disable()
     }
+
+    setTimeout(() => {
+      extensionPort.postMessage({
+        type: 'getSocketStatus',
+      } satisfies BrowserMessage)
+    }, 1000)
   })
+}
+
+function renderSocketStatus(isConnected: boolean) {
+  $('#socket-status').remove()
+  const ele = $(
+    `<p id="socket-status">Socket Status: ${
+      isConnected ? 'Connected' : 'Disconnected'
+    }</p>`,
+  )
+  $('body').append(ele)
 }
 
 async function main() {
@@ -158,6 +177,19 @@ async function main() {
       }
     })
   }
+
+  extensionPort.postMessage({
+    type: 'getSocketStatus',
+  } satisfies BrowserMessage)
+
+  extensionPort.onMessage.addListener((message: BrowserMessage) => {
+    console.debug('action received port message', message)
+    if (message.type === 'getSocketStatus') {
+      const data = message.data as GetSocketStatusData
+
+      renderSocketStatus(data.isConnected)
+    }
+  })
 }
 
 main()

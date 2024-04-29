@@ -1,5 +1,6 @@
 import {
   BrowserMessage,
+  GetSocketStatusData,
   STORAGE_KEYS,
   getBrowser,
   getStorageValues,
@@ -58,6 +59,20 @@ browser.storage.onChanged.addListener((changes) => {
     const isEnabled = changes.enabled.newValue as boolean
     socketController.setEnabled(isEnabled)
   }
+})
+
+browser.runtime.onConnect.addListener((port) => {
+  port.onMessage.addListener((message: BrowserMessage) => {
+    console.debug('service worker received port message', message)
+    if (message.type === 'getSocketStatus') {
+      port.postMessage({
+        type: 'getSocketStatus',
+        data: {
+          isConnected: socketController.isConnected(),
+        } satisfies GetSocketStatusData,
+      } satisfies BrowserMessage)
+    }
+  })
 })
 
 async function main() {

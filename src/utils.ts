@@ -72,8 +72,18 @@ export async function sendBrowserMessage(message: BrowserMessage) {
 }
 
 export interface BrowserMessage {
-  type: 'sync' | 'findVideo' | 'checkForVideo' | 'play' | 'pause'
+  type:
+    | 'sync'
+    | 'findVideo'
+    | 'checkForVideo'
+    | 'play'
+    | 'pause'
+    | 'getSocketStatus'
   data?: any
+}
+
+export interface GetSocketStatusData {
+  isConnected: boolean
 }
 
 /** akin to is tab visible. used in content scripts. use tabs.query in action/background scripts */
