@@ -67,8 +67,10 @@ function hookupCopyRoomId() {
   })
 }
 
-function renderSyncEnabled(enabled: boolean) {
+function renderPowerBtn(enabled: boolean) {
   const syncEnabledEle = $('#power-icon')
+  const connectBtn = $('#connect-socket-btn')
+  const findVideoBtn = $('#find-video-btn')
 
   const enable = () => {
     syncEnabledEle.removeClass('icon-off')
@@ -77,6 +79,10 @@ function renderSyncEnabled(enabled: boolean) {
   const disable = () => {
     syncEnabledEle.removeClass('icon-on')
     syncEnabledEle.addClass('icon-off')
+
+    // ensure status buttons are hidden
+    connectBtn.addClass('hidden')
+    findVideoBtn.addClass('hidden')
   }
 
   if (enabled) {
@@ -105,7 +111,8 @@ function renderSyncEnabled(enabled: boolean) {
   })
 }
 
-function renderSocketStatus(isConnected: boolean, isExtensionEnabled: boolean) {
+async function renderSocketStatus(isConnected: boolean) {
+  const { enabled } = await getStorageValues()
   const iconOff = $('#socket-status-icon-off')
   const iconOn = $('#socket-status-icon-on')
   const connectBtn = $('#connect-socket-btn')
@@ -119,7 +126,7 @@ function renderSocketStatus(isConnected: boolean, isExtensionEnabled: boolean) {
     iconOn.addClass('hidden')
 
     // extension is enabled but no video found, render button to try and find it
-    if (isExtensionEnabled) {
+    if (enabled) {
       connectBtn.removeClass('hidden')
       connectBtn.on('click', async () => {
         extensionPort.postMessage({
@@ -130,7 +137,8 @@ function renderSocketStatus(isConnected: boolean, isExtensionEnabled: boolean) {
   }
 }
 
-function renderVideoStatus(foundVideo: boolean, isExtensionEnabled: boolean) {
+async function renderVideoStatus(foundVideo: boolean) {
+  const { enabled } = await getStorageValues()
   const iconOff = $('#video-status-icon-off')
   const iconOn = $('#video-status-icon-on')
   const findVideoBtn = $('#find-video-btn')
@@ -144,7 +152,7 @@ function renderVideoStatus(foundVideo: boolean, isExtensionEnabled: boolean) {
     iconOn.addClass('hidden')
 
     // extension is enabled but no video found, render button to try and find it
-    if (isExtensionEnabled) {
+    if (enabled) {
       findVideoBtn.removeClass('hidden')
       findVideoBtn.on('click', async () => {
         sendMessageToTab({ type: 'findVideo' } satisfies BrowserMessage)
@@ -159,7 +167,7 @@ async function main() {
   const roomIdEle = renderRoomId(roomId)
   hookupCopyRoomId()
 
-  renderSyncEnabled(enabled)
+  renderPowerBtn(enabled)
 
   const setRoomId = async (newRoomId: string) => {
     roomIdEle.text(newRoomId)
@@ -191,7 +199,7 @@ async function main() {
     // listen for content script to respond
     tabPort.onMessage.addListener((message: BrowserMessage) => {
       if (message.type === 'checkForVideo') {
-        renderVideoStatus(message.data, enabled)
+        renderVideoStatus(message.data)
       }
     })
   }
@@ -205,7 +213,7 @@ async function main() {
     if (message.type === 'getSocketStatus') {
       const data = message.data as GetSocketStatusData
 
-      renderSocketStatus(data.isConnected, enabled)
+      renderSocketStatus(data.isConnected)
     }
   })
 }
