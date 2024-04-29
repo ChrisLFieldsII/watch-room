@@ -105,16 +105,28 @@ function renderSyncEnabled(enabled: boolean) {
   })
 }
 
-function renderSocketStatus(isConnected: boolean) {
+function renderSocketStatus(isConnected: boolean, isExtensionEnabled: boolean) {
   const iconOff = $('#socket-status-icon-off')
   const iconOn = $('#socket-status-icon-on')
+  const connectBtn = $('#connect-socket-btn')
 
   if (isConnected) {
     iconOff.addClass('hidden')
     iconOn.removeClass('hidden')
+    connectBtn.addClass('hidden')
   } else {
     iconOff.removeClass('hidden')
     iconOn.addClass('hidden')
+
+    // extension is enabled but no video found, render button to try and find it
+    if (isExtensionEnabled) {
+      connectBtn.removeClass('hidden')
+      connectBtn.on('click', async () => {
+        extensionPort.postMessage({
+          type: 'attemptConnectSocket',
+        } satisfies BrowserMessage)
+      })
+    }
   }
 }
 
@@ -135,7 +147,7 @@ function renderVideoStatus(foundVideo: boolean, isExtensionEnabled: boolean) {
     if (isExtensionEnabled) {
       findVideoBtn.removeClass('hidden')
       findVideoBtn.on('click', async () => {
-        sendMessageToTab({ type: 'findVideo' })
+        sendMessageToTab({ type: 'findVideo' } satisfies BrowserMessage)
       })
     }
   }
@@ -193,7 +205,7 @@ async function main() {
     if (message.type === 'getSocketStatus') {
       const data = message.data as GetSocketStatusData
 
-      renderSocketStatus(data.isConnected)
+      renderSocketStatus(data.isConnected, enabled)
     }
   })
 }

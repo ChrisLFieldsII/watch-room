@@ -72,6 +72,21 @@ browser.runtime.onConnect.addListener((port) => {
         } satisfies GetSocketStatusData,
       } satisfies BrowserMessage)
     }
+
+    if (message.type === 'attemptConnectSocket') {
+      if (!socketController.isConnected()) {
+        socketController.connect()
+      }
+
+      setTimeout(() => {
+        port.postMessage({
+          type: 'getSocketStatus',
+          data: {
+            isConnected: socketController.isConnected(),
+          } satisfies GetSocketStatusData,
+        } satisfies BrowserMessage)
+      }, 1000)
+    }
   })
 })
 
