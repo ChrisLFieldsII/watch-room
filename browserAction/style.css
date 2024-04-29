@@ -68,6 +68,10 @@ hr {
   margin-top: 16px;
 }
 
+.mb-8 {
+  margin-bottom: 8px;
+}
+
 .mb-16 {
   margin-bottom: 16px;
 }
@@ -97,11 +101,11 @@ hr {
   transform: scale(0.9);
 }
 
-.power-icon-on {
+.icon-on {
   fill: var(--primary-color);
 }
 
-.power-icon-off {
+.icon-off {
   fill: var(--danger-color);
 }
 

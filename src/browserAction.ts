@@ -46,25 +46,6 @@ function renderSyncBtn() {
   })
 }
 
-function renderFoundVideo(foundVideo: boolean) {
-  const foundVideoEle = $(
-    `<p id='foundVideoEle'>Found Video: ${foundVideo}</p>`,
-  )
-  if (!foundVideo) {
-    const findVideoBtn = $('<button class="ml-4">Find Video</button>')
-    findVideoBtn.prop(
-      'title',
-      'Find the video element on the page for the extension to work',
-    )
-    findVideoBtn.on('click', async () => {
-      sendMessageToTab({ type: 'findVideo' })
-    })
-    foundVideoEle.append(findVideoBtn)
-  }
-
-  $('body').append(foundVideoEle)
-}
-
 function hookupCopyRoomId() {
   const roomIdContainer = $('#room-id-container')
   roomIdContainer.on('click', async () => {
@@ -89,12 +70,12 @@ function renderSyncEnabled(enabled: boolean) {
   const syncEnabledEle = $('#power-icon')
 
   const enable = () => {
-    syncEnabledEle.removeClass('power-icon-off')
-    syncEnabledEle.addClass('power-icon-on')
+    syncEnabledEle.removeClass('icon-off')
+    syncEnabledEle.addClass('icon-on')
   }
   const disable = () => {
-    syncEnabledEle.removeClass('power-icon-on')
-    syncEnabledEle.addClass('power-icon-off')
+    syncEnabledEle.removeClass('icon-on')
+    syncEnabledEle.addClass('icon-off')
   }
 
   if (enabled) {
@@ -104,7 +85,7 @@ function renderSyncEnabled(enabled: boolean) {
   }
 
   syncEnabledEle.on('click', async () => {
-    const newEnabled = !syncEnabledEle.hasClass('power-icon-on')
+    const newEnabled = !syncEnabledEle.hasClass('icon-on')
     console.debug('Sync enabled clicked', newEnabled)
     browser.storage.local.set({ [STORAGE_KEYS.ENABLED]: newEnabled })
     if (newEnabled) {
@@ -122,13 +103,29 @@ function renderSyncEnabled(enabled: boolean) {
 }
 
 function renderSocketStatus(isConnected: boolean) {
-  $('#socket-status').remove()
-  const ele = $(
-    `<p id="socket-status">Socket Status: ${
-      isConnected ? 'Connected' : 'Disconnected'
-    }</p>`,
-  )
-  $('body').append(ele)
+  const iconOff = $('#socket-status-icon-off')
+  const iconOn = $('#socket-status-icon-on')
+
+  if (isConnected) {
+    iconOff.addClass('hidden')
+    iconOn.removeClass('hidden')
+  } else {
+    iconOff.removeClass('hidden')
+    iconOn.addClass('hidden')
+  }
+}
+
+function renderVideoStatus(foundVideo: boolean) {
+  const iconOff = $('#video-status-icon-off')
+  const iconOn = $('#video-status-icon-on')
+
+  if (foundVideo) {
+    iconOff.addClass('hidden')
+    iconOn.removeClass('hidden')
+  } else {
+    iconOff.removeClass('hidden')
+    iconOn.addClass('hidden')
+  }
 }
 
 async function main() {
@@ -169,8 +166,7 @@ async function main() {
     // listen for content script to respond
     port.onMessage.addListener((message: BrowserMessage) => {
       if (message.type === 'checkForVideo') {
-        $('#foundVideoEle').remove()
-        renderFoundVideo(message.data)
+        renderVideoStatus(message.data)
       }
     })
   }
