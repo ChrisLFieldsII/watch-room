@@ -27,4 +27,3 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 - add donation page
 - messaging system isnt really typed well at the moment
 - make svg icon
-- add whether socket is connected to popup
