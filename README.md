@@ -12,6 +12,7 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 ## Philosophies
 
 - The extension should listen to the video player events rather than re-inventing the wheel and having controls in the extension browserAction
+- not doing a chat feature or anything like that. there are plenty other great apps to use for chatting while watching media
 
 ## Permissions required and why
 
@@ -27,3 +28,4 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 - add donation page
 - messaging system isnt really typed well at the moment
 - make svg icon
+- add help page for tips dealing with ads and overall how extension works

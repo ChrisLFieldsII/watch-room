@@ -40,13 +40,10 @@ function renderJoinRoomInput({
 }
 
 function renderSyncBtn() {
-  const syncBtn = $('<button class="block">Sync URL</button>')
-  syncBtn.prop('title', 'Sync the current tab with other users in the room')
+  const syncBtn = $('#sync-url-btn')
   syncBtn.on('click', async () => {
     sendMessageToTab({ type: 'sync' })
   })
-
-  $('body').append(syncBtn)
 }
 
 function renderFoundVideo(foundVideo: boolean) {
