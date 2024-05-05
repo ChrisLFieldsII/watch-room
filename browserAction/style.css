@@ -31,6 +31,9 @@ hr {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.center {
   justify-content: center;
 }
 

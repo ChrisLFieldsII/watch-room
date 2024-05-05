@@ -8,7 +8,7 @@
     <!-- render room id -->
     <div
       id="room-id-container"
-      class="row clickable bg-light p-4"
+      class="row center clickable bg-light p-4"
       title="Click to copy your room id. Share the room id with others to sync your media!"
     >
       <span class="roboto-bold room-id">
@@ -44,8 +44,8 @@
       </svg>
     </div>
 
-    <!-- enable/disable btn -->
-    <div class="row mt-16">
+    <!-- power btn -->
+    <div class="row center mt-16">
       <!-- need to wrap svg with span since title attr didnt work on svg element -->
       <span
         title="Click to enable/disable media sync. Red=disabled, Blue=enabled"
@@ -67,7 +67,7 @@
     <hr class="my-16" />
 
     <!-- create new room btn -->
-    <div class="row px-16 mb-16">
+    <div class="px-16 mb-16">
       <button
         id="create-room-btn"
         class="btn-block"
@@ -108,10 +108,10 @@
 
     <!-- socket status indicator -->
     <div
-      class="px-16 mb-8"
+      class="row px-16 mb-8"
       title="The socket must be connected to send and receive events from other people in the room"
     >
-      <span class="roboto-regular">Socket status: </span>
+      <span class="roboto-regular mr-4">Socket status: </span>
       <!-- circle check icon -->
       <svg
         id="socket-status-icon-on"
@@ -146,10 +146,10 @@
 
     <!-- video status indicator -->
     <div
-      class="px-16 mb-16"
+      class="row px-16 mb-16"
       title="The extension must be able to find a video element so it can detect play/pause events"
     >
-      <span class="roboto-regular">Video status: </span>
+      <span class="roboto-regular mr-4">Video status: </span>
       <!-- circle check icon -->
       <svg
         id="video-status-icon-on"
