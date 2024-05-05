@@ -37,6 +37,7 @@ function renderJoinRoomInput({
   const joinBtn = $('#join-room-btn')
   joinBtn.on('click', async () => {
     const newRoomId = joinInput.val() as string
+    // TODO: should prob enforce some kind of validation on the room id like at least 8 characters
     if (!newRoomId) return
     onClick(newRoomId)
   })

@@ -85,7 +85,11 @@
         type="text"
         placeholder="Enter Room ID to join"
       />
-      <button id="join-room-btn" class="btn-inline">
+      <button
+        id="join-room-btn"
+        class="btn-inline"
+        title="Get a room id from a friend and enter it into the input and press this button to watch media together"
+      >
         <span class="roboto-medium fs-16">Join Room</span>
       </button>
     </div>
@@ -103,7 +107,10 @@
     <hr class="my-16" />
 
     <!-- socket status indicator -->
-    <div class="px-16 mb-8">
+    <div
+      class="px-16 mb-8"
+      title="The socket must be connected to send and receive events from other people in the room"
+    >
       <span class="roboto-regular">Socket status: </span>
       <!-- circle check icon -->
       <svg
@@ -138,7 +145,10 @@
     </div>
 
     <!-- video status indicator -->
-    <div class="px-16 mb-16">
+    <div
+      class="px-16 mb-16"
+      title="The extension must be able to find a video element so it can detect play/pause events"
+    >
       <span class="roboto-regular">Video status: </span>
       <!-- circle check icon -->
       <svg
