@@ -24,8 +24,7 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 
 ## TODOS
 
-- make action look pretty
 - add donation page
 - messaging system isnt really typed well at the moment
-- make svg icon
 - add help page for tips dealing with ads and overall how extension works
+- rebrand to VideoSync
