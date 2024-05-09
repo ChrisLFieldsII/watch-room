@@ -192,6 +192,9 @@ async function main() {
 
   renderSyncBtn()
 
+  // default to false until port responds to check for video
+  renderVideoStatus(false)
+
   // set up 2 way connection between action and content script
   const tab = await getActiveTab()
   if (tab?.id !== undefined) {
