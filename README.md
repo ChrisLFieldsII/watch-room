@@ -1,4 +1,4 @@
-# Media Sync
+# WatchRoom
 
 ## How to dev
 
@@ -12,7 +12,7 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 ## Philosophies
 
 - The extension should listen to the video player events rather than re-inventing the wheel and having controls in the extension browserAction
-- not doing a chat feature or anything like that. there are plenty other great apps to use for chatting while watching media
+- not doing a chat feature or anything like that. there are plenty other great apps to use for chatting while watching video
 
 ## Permissions required and why
 
@@ -27,4 +27,4 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
 - add donation page
 - messaging system isnt really typed well at the moment
 - add help page for tips dealing with ads and overall how extension works
-- rebrand to VideoSync
+- create public "Help" page via google docs and add link to it in extension
