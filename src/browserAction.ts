@@ -140,6 +140,25 @@ async function renderSocketStatus(isConnected: boolean) {
   }
 }
 
+/**
+ * Hookup support link to open in new tab.
+ * Anchor element didnt work in chrome so using JS
+ */
+function hookupSupportLink() {
+  const supportLink = $('#support-link')
+  supportLink.on('click', async (e) => {
+    e.preventDefault()
+
+    browser.tabs
+      .create({
+        url: supportLink.attr('href'),
+      })
+      .catch((error) => {
+        console.debug('Error opening support link', error)
+      })
+  })
+}
+
 async function renderVideoStatus(foundVideo: boolean) {
   const { enabled } = await getStorageValues()
   const iconOff = $('#video-status-icon-off')
@@ -194,6 +213,8 @@ async function main() {
 
   // default to false until port responds to check for video
   renderVideoStatus(false)
+
+  hookupSupportLink()
 
   // set up 2 way connection between action and content script
   const tab = await getActiveTab()

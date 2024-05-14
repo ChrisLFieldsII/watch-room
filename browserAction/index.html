@@ -108,10 +108,10 @@
 
     <!-- socket status indicator -->
     <div
-      class="row px-16 mb-8"
-      title="The socket must be connected to send and receive events from other people in the room"
+      class="row center px-16 mb-8"
+      title="The server must be connected to send and receive events from other people in the room"
     >
-      <span class="roboto-regular mr-4">Socket status: </span>
+      <span class="roboto-regular mr-4">Server status: </span>
       <!-- circle check icon -->
       <svg
         id="socket-status-icon-on"
@@ -144,13 +144,13 @@
         class="btn-inline ml-16 hidden"
         title="Use this button to try and attempt to connect the socket to the server"
       >
-        <span class="roboto-medium">Connect Socket</span>
+        <span class="roboto-medium">Connect Server</span>
       </button>
     </div>
 
     <!-- video status indicator -->
     <div
-      class="row px-16 mb-16"
+      class="row center px-16 mb-16"
       title="The extension must be able to find a video element so it can detect play/pause events"
     >
       <span class="roboto-regular mr-4">Video status: </span>
@@ -187,6 +187,19 @@
       >
         <span class="roboto-medium">Find Video</span>
       </button>
+    </div>
+
+    <hr class="my-16" />
+
+    <!-- support page -->
+    <div class="row center px-16 mb-16">
+      <a
+        id="support-link"
+        href="https://docs.google.com/document/d/1g4j4It5Dj0F6qpXVGDywb0FPXOvcBWVnE_QfMC_2u1g/edit?usp=sharing"
+        _target="blank"
+      >
+        <span class="roboto-light">Having trouble? View the Support Page</span>
+      </a>
     </div>
 
     <script src="../dist/browserAction.js"></script>
