@@ -1,3 +1,23 @@
+## AWS EC2
+
+Steps for getting server running on AWS EC2. Uses docker to containerize the server.
+
+### Locally
+
+- run `yarn docker:build`
+- test docker server locally via `yarn docker:run`
+- get a login token to push image to AWS ECR via `yarn docker:login`
+- push image via `yarn docker:push`
+
+### EC2 instance
+
+- ssh into EC2 instance. Going to the EC2 instance in AWS console and using the "Connect" option helps with this
+- run the `sudo yum update -y && sudo yum install docker -y && sudo systemctl start docker && sudo systemctl status docker` script within the EC2 server
+- run `sudo docker pull public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server` in EC2 instance
+- run `sudo docker run -p 443:3000/tcp public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server` in EC2 instance
+
+---
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>

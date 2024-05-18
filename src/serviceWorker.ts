@@ -15,8 +15,8 @@ console.debug('browser type', getBrowser())
 
 // socket listens for events and sends message to tab
 const socketController = new SocketController({
-  // uri: 'http://localhost:3000', // TODO: move to env var
-  uri: 'https://localhost:3000',
+  // uri: 'https://localhost:3000', // TODO: move to env var
+  uri: 'https://ec2-13-58-196-13.us-east-2.compute.amazonaws.com',
   // chrome can use websockets fine, but specifying and specific transport doesnt seem to work for firefox. passing undefined and let socket.io client figure out the transport
   transports: getBrowser() === 'Chrome' ? ['websocket'] : undefined,
   eventHandlers: {
