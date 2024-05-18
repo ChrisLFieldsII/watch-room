@@ -52,6 +52,7 @@ export class SocketController extends AbstractController {
     this.socket = io(uri, {
       transports: params.transports,
       autoConnect: false,
+      reconnectionAttempts: 5,
     })
 
     this.socket
