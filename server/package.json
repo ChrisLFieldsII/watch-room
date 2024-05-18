@@ -18,8 +18,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "docker:build": "docker build -t watch-room-server .",
-    "docker:run": "docker run -p 127.0.0.1:3000:3000/tcp --name 'watch-room-server-dev' watch-room-server"
+    "docker:build": "docker build -t public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server --platform linux/amd64 .",
+    "docker:run": "docker run -p 127.0.0.1:3000:3000/tcp --name 'watch-room-server-dev' public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server",
+    "docker:push": "docker push public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server",
+    "docker:login": "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/f8s4h7z9/chrislfieldsii"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
