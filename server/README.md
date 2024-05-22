@@ -2,6 +2,10 @@
 
 The domain is watchroomext.space
 
+Certbot install instructions are [here](https://certbot.eff.org/instructions?ws=other&os=pip) for TLS cert.
+
+Certbot cert needs to be renewed on 8/20/2024. I did the auto-renewal command, but check to be sure.
+
 ## AWS EC2
 
 Steps for getting server running on AWS EC2. Uses docker to containerize the server.
