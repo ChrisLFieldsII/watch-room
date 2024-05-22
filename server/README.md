@@ -1,3 +1,7 @@
+## Domain
+
+The domain is watchroomext.space
+
 ## AWS EC2
 
 Steps for getting server running on AWS EC2. Uses docker to containerize the server.
