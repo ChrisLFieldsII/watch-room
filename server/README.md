@@ -16,9 +16,9 @@ Steps for getting server running on AWS EC2. Uses docker to containerize the ser
 ### EC2 instance
 
 - ssh into EC2 instance. Going to the EC2 instance in AWS console and using the "Connect" option helps with this
-- run the `sudo yum update -y && sudo yum install docker -y && sudo systemctl start docker && sudo systemctl status docker` script within the EC2 server
-- run `sudo docker pull public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server` in EC2 instance
-- run `sudo docker run -p 443:3000/tcp public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server` in EC2 instance
+- run the `ec2:setup-docker` script within the EC2 server
+- run the `ec2:docker-pull` script in EC2 instance
+- run the `ec2:docker-run` script in EC2 instance
 
 ---
 

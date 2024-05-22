@@ -16,7 +16,7 @@ async function bootstrap() {
 
   // need a separate http server for certbot: https://certbot.eff.org/instructions?ws=other&os=arch
   const httpServer = http.createServer(app.getHttpAdapter().getInstance());
-  httpServer.listen(80);
+  httpServer.listen(8080);
 
   const shutdownObserver = app.get(ShutdownObserver);
   shutdownObserver.addHttpServer(httpServer);

@@ -4,5 +4,5 @@ COPY . .
 RUN corepack enable
 RUN yarn install --immutable
 RUN yarn build
-EXPOSE 3000
+EXPOSE 3000 8080
 CMD ["yarn", "start:prod"]

@@ -19,12 +19,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "docker:build": "docker build -t public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server --platform linux/amd64 .",
-    "docker:run": "docker run -p 127.0.0.1:3000:3000/tcp --name 'watch-room-server-dev' public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server",
+    "docker:run": "docker run -p 127.0.0.1:3000:3000/tcp -p 127.0.0.1:8080:8080/tcp --name 'watch-room-server-dev' public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server",
     "docker:push": "docker push public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server",
     "docker:login": "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/f8s4h7z9/chrislfieldsii",
     "ec2:setup-docker": "sudo yum update -y && sudo yum install docker -y && sudo systemctl start docker && sudo systemctl status docker",
     "ec2:docker-pull": "sudo docker pull public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server",
-    "ec2:docker-run": "sudo docker run -p 443:3000/tcp public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server"
+    "ec2:docker-run": "sudo docker run -p 443:3000/tcp -p 80:8080/tcp public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server"
   },
   "scriptsDocs": {
     "ec2:setup-docker": "Sets up docker on an ec2 instance. Must ssh into ec2 instance and copy this script and run it"
