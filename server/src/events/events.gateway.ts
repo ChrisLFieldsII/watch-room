@@ -3,12 +3,10 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
 } from '@nestjs/websockets';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Server } from 'socket.io';
 
+// using port 3001 for the websocket server
 @WebSocketGateway({
   cors: {
     origin: '*',
