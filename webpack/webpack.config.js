@@ -1,14 +1,19 @@
 const path = require('path')
+const Dotenv = require('dotenv-webpack')
 
-const resolve = (filename) =>
+const resolveTsFile = (filename) =>
   path.resolve(__dirname, '..', 'src', `${filename}.ts`)
+
+const resolveEnvFile = (env) => path.resolve(__dirname, '..', `.env.${env}`)
+
+console.log('ENV', process.env.ENV)
 
 module.exports = {
   mode: 'production',
   entry: {
-    contentScript: resolve('contentScript'),
-    browserAction: resolve('browserAction'),
-    serviceWorker: resolve('serviceWorker'),
+    contentScript: resolveTsFile('contentScript'),
+    browserAction: resolveTsFile('browserAction'),
+    serviceWorker: resolveTsFile('serviceWorker'),
   },
   output: {
     path: path.join(__dirname, '../dist'),
@@ -26,4 +31,9 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new Dotenv({
+      path: resolveEnvFile(process.env.ENV),
+    }),
+  ],
 }

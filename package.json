@@ -2,8 +2,10 @@
   "name": "watchroom",
   "packageManager": "yarn@4.0.2",
   "scripts": {
-    "build": "webpack --config webpack/webpack.config.js",
-    "watch": "yarn build -w",
+    "build:dev": "ENV=dev webpack --config webpack/webpack.config.js",
+    "build:prod": "ENV=prod webpack --config webpack/webpack.config.js",
+    "watch:dev": "yarn build:dev -w",
+    "watch:prod": "yarn build:prod -w",
     "dev": "web-ext run"
   },
   "dependencies": {
@@ -15,6 +17,7 @@
   "devDependencies": {
     "@types/jquery": "^3",
     "@types/webextension-polyfill": "^0.10.7",
+    "dotenv-webpack": "^8.1.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",
     "webpack": "^5.91.0",

@@ -12,11 +12,11 @@ import browser from 'webextension-polyfill'
 // NOTE: events MUST be declared at global scope. https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/events
 
 console.debug('browser type', getBrowser())
+console.debug('SERVER_URI', process.env.SERVER_URI)
 
 // socket listens for events and sends message to tab
 const socketController = new SocketController({
-  // uri: 'https://localhost:3000', // TODO: move to env var
-  uri: 'https://ec2-13-58-196-13.us-east-2.compute.amazonaws.com',
+  uri: process.env.SERVER_URI!, // TODO: move to env var
   // chrome can use websockets fine, but specifying and specific transport doesnt seem to work for firefox. passing undefined and let socket.io client figure out the transport
   transports: getBrowser() === 'Chrome' ? ['websocket'] : undefined,
   eventHandlers: {
