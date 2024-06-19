@@ -1,15 +1,26 @@
 import $ from 'jquery'
 import { AbstractController } from './abstract.controller'
 
+/** Custom event map for extension "video" */
 interface VideoEventMap {
   play: {}
   pause: {}
   seeked: {}
+  playbackRateChanged: {}
 }
 
 type VideoEventKey = keyof VideoEventMap
 
 type VideoEventHandlers = Record<VideoEventKey, () => void>
+
+/** Official HTML video events */
+type HTMLVideoEventKey = 'play' | 'pause' | 'seeked' | 'ratechange'
+const HTML_VIDEO_EVENTS: HTMLVideoEventKey[] = [
+  'play',
+  'pause',
+  'seeked',
+  'ratechange',
+]
 
 interface CtorParams {
   eventHandlers: VideoEventHandlers
@@ -33,9 +44,7 @@ export class VideoController extends AbstractController {
     if (enabled) {
       this.findVideo()
     } else {
-      this.video?.off(
-        'play.cfiiWatchRoom pause.cfiiWatchRoom seeked.cfiiWatchRoom',
-      )
+      this.video?.off(HTML_VIDEO_EVENTS.map(generateEventTag).join(' '))
       this.video = null
     }
 
@@ -58,7 +67,7 @@ export class VideoController extends AbstractController {
 
     console.debug('Found video element', this.video)
 
-    this.video.on('play.cfiiWatchRoom', () => {
+    this.video.on(generateEventTag('play'), () => {
       this.lastAction = 'play'
 
       console.debug('HTML video "play" event', this.getVideoTime())
@@ -71,7 +80,7 @@ export class VideoController extends AbstractController {
       eventHandlers.play()
     })
 
-    this.video.on('pause.cfiiWatchRoom', () => {
+    this.video.on(generateEventTag('pause'), () => {
       this.lastAction = 'pause'
 
       console.debug('HTML video "pause" event', this.getVideoTime())
@@ -84,7 +93,7 @@ export class VideoController extends AbstractController {
       eventHandlers.pause()
     })
 
-    this.video.on('seeked.cfiiWatchRoom', () => {
+    this.video.on(generateEventTag('seeked'), () => {
       console.debug('HTML video "seeked" event', this.getVideoTime())
 
       if (!this.isEnabled) {
@@ -143,4 +152,8 @@ export class VideoController extends AbstractController {
   seek(time: number) {
     this.setVideoTime(time)
   }
+}
+
+function generateEventTag(event: HTMLVideoEventKey): string {
+  return `${event}.cfiiWatchRoom`
 }
