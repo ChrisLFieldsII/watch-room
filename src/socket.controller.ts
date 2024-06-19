@@ -5,6 +5,7 @@ import { isDocumentVisible } from './utils'
 interface SocketEventMap {
   playVideo: { time: number }
   pauseVideo: { time: number }
+  seekedVideo: { time: number }
   sync: { url: string }
   heartbeat: {}
 }

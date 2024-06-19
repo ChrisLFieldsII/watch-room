@@ -29,6 +29,9 @@ const socketController = new SocketController({
     pauseVideo: (data: SocketEventData<'pauseVideo'>) => {
       sendMessageToTab({ type: 'pause', data: { ...data, skipEmit: true } })
     },
+    seekedVideo: (data: SocketEventData<'seekedVideo'>) => {
+      sendMessageToTab({ type: 'seeked', data: { ...data, skipEmit: true } })
+    },
     sync: async (data: SocketEventData<'sync'>) => {
       sendMessageToTab({ type: 'sync', data: { ...data, skipEmit: true } })
     },
@@ -38,6 +41,7 @@ const socketController = new SocketController({
   },
 })
 
+// listens for msgs sent by VideoController in contentScript
 browser.runtime.onMessage.addListener((message: BrowserMessage) => {
   console.debug('received browser message', message)
   if (message.type === 'play') {
@@ -48,6 +52,9 @@ browser.runtime.onMessage.addListener((message: BrowserMessage) => {
   }
   if (message.type === 'sync') {
     socketController.emit('sync', message.data)
+  }
+  if (message.type === 'seeked') {
+    socketController.emit('seekedVideo', message.data)
   }
 })
 

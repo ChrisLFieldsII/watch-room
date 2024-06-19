@@ -48,6 +48,12 @@ async function main() {
           data: { time: videoController.getVideoTime() },
         })
       },
+      seeked: () => {
+        sendBrowserMessageWrapper({
+          type: 'seeked',
+          data: { time: videoController.getVideoTime() },
+        })
+      },
     },
   })
 
@@ -63,7 +69,7 @@ async function main() {
 
   let thePort: browser.Runtime.Port | null = null
 
-  // 1-way message listener. listens for msgs from the extension popup
+  // 1-way message listener. listens for msgs from the extension popup & service worker
   browser.runtime.onMessage.addListener((message: BrowserMessage) => {
     if (!isDocumentVisible()) {
       console.debug('received message but document is not visible', message)
@@ -88,6 +94,9 @@ async function main() {
     }
     if (type === 'pause') {
       videoController.pause(data.time)
+    }
+    if (type === 'seeked') {
+      videoController.seek(data.time)
     }
     if (type === 'sync') {
       // received msg from popup, send it to background script for socket to emit

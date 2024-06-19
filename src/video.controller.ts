@@ -4,6 +4,7 @@ import { AbstractController } from './abstract.controller'
 interface VideoEventMap {
   play: {}
   pause: {}
+  seeked: {}
 }
 
 type VideoEventKey = keyof VideoEventMap
@@ -17,6 +18,7 @@ interface CtorParams {
 
 export class VideoController extends AbstractController {
   private video: JQuery<HTMLVideoElement> | null = null
+  private lastAction: 'play' | 'pause' | null = null
 
   constructor(private params: CtorParams) {
     super()
@@ -31,7 +33,9 @@ export class VideoController extends AbstractController {
     if (enabled) {
       this.findVideo()
     } else {
-      this.video?.off('play.cfiiWatchRoom pause.cfiiWatchRoom')
+      this.video?.off(
+        'play.cfiiWatchRoom pause.cfiiWatchRoom seeked.cfiiWatchRoom',
+      )
       this.video = null
     }
 
@@ -55,6 +59,8 @@ export class VideoController extends AbstractController {
     console.debug('Found video element', this.video)
 
     this.video.on('play.cfiiWatchRoom', () => {
+      this.lastAction = 'play'
+
       console.debug('HTML video "play" event', this.getVideoTime())
 
       if (!this.isEnabled) {
@@ -66,6 +72,8 @@ export class VideoController extends AbstractController {
     })
 
     this.video.on('pause.cfiiWatchRoom', () => {
+      this.lastAction = 'pause'
+
       console.debug('HTML video "pause" event', this.getVideoTime())
 
       if (!this.isEnabled) {
@@ -76,6 +84,25 @@ export class VideoController extends AbstractController {
       eventHandlers.pause()
     })
 
+    this.video.on('seeked.cfiiWatchRoom', () => {
+      console.debug('HTML video "seeked" event', this.getVideoTime())
+
+      if (!this.isEnabled) {
+        console.debug('Video is not enabled, ignoring seeked event')
+        return
+      }
+      // NOTE: calling play/pause makes seeked event fire since it calls `setVideoTime` so we use `lastAction` to prevent emitting seeked in those cases
+      if (this.lastAction !== null) {
+        console.debug(
+          `Last action was ${this.lastAction} so preventing seeked event`,
+        )
+        this.lastAction = null
+        return
+      }
+
+      eventHandlers.seeked()
+    })
+
     return this
   }
 
@@ -83,11 +110,14 @@ export class VideoController extends AbstractController {
     return this.video?.prop('currentTime') || 0
   }
 
+  // NOTE: any time this is called, it will also emit a seeked event
   setVideoTime(time: number) {
     this.video?.prop('currentTime', time)
   }
 
   play(time: number) {
+    this.lastAction = 'play'
+
     this.video
       ?.get(0)
       ?.play()
@@ -100,11 +130,17 @@ export class VideoController extends AbstractController {
   }
 
   pause(time: number) {
+    this.lastAction = 'pause'
+
     this.video?.get(0)?.pause()
     this.setVideoTime(time)
   }
 
   sync(url: string) {
     window.location.href = url
+  }
+
+  seek(time: number) {
+    this.setVideoTime(time)
   }
 }

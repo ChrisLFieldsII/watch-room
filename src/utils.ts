@@ -78,6 +78,7 @@ export interface BrowserMessage {
     | 'checkForVideo'
     | 'play'
     | 'pause'
+    | 'seeked'
     | 'getSocketStatus'
     | 'attemptConnectSocket'
   data?: any
