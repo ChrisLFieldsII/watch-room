@@ -79,6 +79,7 @@ export interface BrowserMessage {
     | 'play'
     | 'pause'
     | 'seeked'
+    | 'playbackRateChanged'
     | 'getSocketStatus'
     | 'attemptConnectSocket'
   data?: any

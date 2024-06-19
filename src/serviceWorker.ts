@@ -35,6 +35,12 @@ const socketController = new SocketController({
     sync: async (data: SocketEventData<'sync'>) => {
       sendMessageToTab({ type: 'sync', data: { ...data, skipEmit: true } })
     },
+    playbackRateChanged: (data: SocketEventData<'playbackRateChanged'>) => {
+      sendMessageToTab({
+        type: 'playbackRateChanged',
+        data: { ...data, skipEmit: true },
+      })
+    },
     heartbeat: () => {
       console.debug('received heartbeat')
     },
@@ -55,6 +61,9 @@ browser.runtime.onMessage.addListener((message: BrowserMessage) => {
   }
   if (message.type === 'seeked') {
     socketController.emit('seekedVideo', message.data)
+  }
+  if (message.type === 'playbackRateChanged') {
+    socketController.emit('playbackRateChanged', message.data)
   }
 })
 

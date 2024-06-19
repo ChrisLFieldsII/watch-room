@@ -54,6 +54,12 @@ async function main() {
           data: { time: videoController.getVideoTime() },
         })
       },
+      playbackRateChanged: () => {
+        sendBrowserMessageWrapper({
+          type: 'playbackRateChanged',
+          data: { playbackRate: videoController.getPlaybackRate() },
+        })
+      },
     },
   })
 
@@ -97,6 +103,9 @@ async function main() {
     }
     if (type === 'seeked') {
       videoController.seek(data.time)
+    }
+    if (type === 'playbackRateChanged') {
+      videoController.setPlaybackRate(data.playbackRate)
     }
     if (type === 'sync') {
       // received msg from popup, send it to background script for socket to emit

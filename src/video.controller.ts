@@ -112,6 +112,17 @@ export class VideoController extends AbstractController {
       eventHandlers.seeked()
     })
 
+    this.video.on(generateEventTag('ratechange'), () => {
+      console.debug('HTML video "ratechange" event')
+
+      if (!this.isEnabled) {
+        console.debug('Video is not enabled, ignoring ratechange event')
+        return
+      }
+
+      eventHandlers.playbackRateChanged()
+    })
+
     return this
   }
 
@@ -151,6 +162,15 @@ export class VideoController extends AbstractController {
 
   seek(time: number) {
     this.setVideoTime(time)
+  }
+
+  getPlaybackRate() {
+    return this.video?.get(0)?.playbackRate || 1
+  }
+
+  setPlaybackRate(rate: number) {
+    const video = this.video?.get(0)
+    if (video) video.playbackRate = rate
   }
 }
 

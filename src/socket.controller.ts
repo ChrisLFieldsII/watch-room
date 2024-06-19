@@ -7,6 +7,7 @@ interface SocketEventMap {
   pauseVideo: { time: number }
   seekedVideo: { time: number }
   sync: { url: string }
+  playbackRateChanged: { playbackRate: number }
   heartbeat: {}
 }
 
