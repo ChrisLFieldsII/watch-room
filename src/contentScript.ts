@@ -2,7 +2,7 @@
 
 import browser from 'webextension-polyfill'
 
-import { VideoController } from './video.controller'
+import { VideoController } from './controllers/video.controller'
 import {
   BrowserMessage,
   STORAGE_KEYS,

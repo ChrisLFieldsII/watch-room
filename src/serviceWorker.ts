@@ -6,7 +6,10 @@ import {
   getStorageValues,
   sendMessageToTab,
 } from './utils'
-import { SocketController, SocketEventData } from './socket.controller'
+import {
+  SocketController,
+  SocketEventData,
+} from './controllers/socket.controller'
 import browser from 'webextension-polyfill'
 
 // NOTE: events MUST be declared at global scope. https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/events

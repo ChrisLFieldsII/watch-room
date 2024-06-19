@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client'
 import { AbstractController } from './abstract.controller'
-import { isDocumentVisible } from './utils'
+import { isDocumentVisible } from '../utils'
 
 interface SocketEventMap {
   playVideo: { time: number }
