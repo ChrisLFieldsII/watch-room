@@ -14,6 +14,8 @@ module.exports = {
     contentScript: resolveTsFile('contentScript'),
     browserAction: resolveTsFile('browserAction'),
     serviceWorker: resolveTsFile('serviceWorker'),
+    netflixContentScript: resolveTsFile('netflix.contentScript'),
+    netflix: resolveTsFile('netflix'),
   },
   output: {
     path: path.join(__dirname, '../dist'),

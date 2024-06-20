@@ -1,5 +1,10 @@
 import $ from 'jquery'
 import { AbstractController } from './abstract.controller'
+import {
+  VideoPlayer,
+  DefaultVideoPlayer,
+  NetflixVideoPlayer,
+} from '../videoPlayers'
 
 /** Custom event map for extension "video" */
 interface VideoEventMap {
@@ -30,6 +35,7 @@ interface CtorParams {
 export class VideoController extends AbstractController {
   private video: JQuery<HTMLVideoElement> | null = null
   private lastAction: 'play' | 'pause' | null = null
+  // private videoPlayer: VideoPlayer  = new DefaultVideoPlayer(null)
 
   constructor(private params: CtorParams) {
     super()

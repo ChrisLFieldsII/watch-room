@@ -27,6 +27,13 @@ function sendBrowserMessageWrapper(message: BrowserMessage) {
   }
 
   sendBrowserMessage(message)
+
+  // post messages to window for specially injected scripts to listen to (Netflix)
+  const windowMessage = {
+    ...message,
+    type: `cfiiWatchRoom.${message.type}`,
+  }
+  window.postMessage(windowMessage, '*')
 }
 
 async function main() {
