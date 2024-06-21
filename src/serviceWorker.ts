@@ -4,6 +4,7 @@ import {
   STORAGE_KEYS,
   getBrowser,
   getStorageValues,
+  logger,
   sendMessageToTab,
 } from './utils'
 import {
@@ -14,8 +15,8 @@ import browser from 'webextension-polyfill'
 
 // NOTE: events MUST be declared at global scope. https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/events
 
-console.debug('browser type', getBrowser())
-console.debug('SERVER_URI', process.env.SERVER_URI)
+logger.log('browser type', getBrowser())
+logger.log('SERVER_URI', process.env.SERVER_URI)
 
 // socket listens for events and sends message to tab
 const socketController = new SocketController({
@@ -45,14 +46,14 @@ const socketController = new SocketController({
       })
     },
     heartbeat: () => {
-      console.debug('received heartbeat')
+      logger.log('received heartbeat')
     },
   },
 })
 
 // listens for msgs sent by VideoController in contentScript
 browser.runtime.onMessage.addListener((message: BrowserMessage) => {
-  console.debug('received browser message', message)
+  logger.log('received browser message', message)
   if (message.type === 'play') {
     socketController.emit('playVideo', message.data)
   }
@@ -71,7 +72,7 @@ browser.runtime.onMessage.addListener((message: BrowserMessage) => {
 })
 
 browser.storage.onChanged.addListener((changes) => {
-  console.debug('storage changed', changes)
+  logger.log('storage changed', changes)
   if (changes[STORAGE_KEYS.ROOM_ID]) {
     socketController.setRoomId(changes.roomId.newValue)
   }
@@ -83,7 +84,7 @@ browser.storage.onChanged.addListener((changes) => {
 
 browser.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((message: BrowserMessage) => {
-    console.debug('service worker received port message', message)
+    logger.log('service worker received port message', message)
     if (message.type === 'getSocketStatus') {
       port.postMessage({
         type: 'getSocketStatus',
@@ -118,5 +119,5 @@ async function main() {
 }
 
 main()
-  .then(() => console.debug('service worker initialized'))
+  .then(() => logger.log('service worker initialized'))
   .catch((error) => console.error('service worker init error', error))

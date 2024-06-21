@@ -8,6 +8,7 @@ import {
   STORAGE_KEYS,
   getStorageValues,
   isDocumentVisible,
+  logger,
   sendBrowserMessage,
 } from './utils'
 
@@ -70,7 +71,7 @@ async function main() {
 
   // storage change listener
   browser.storage.onChanged.addListener((changes) => {
-    console.debug('storage changed', changes)
+    logger.log('storage changed', changes)
 
     if (changes[STORAGE_KEYS.ENABLED]) {
       const isEnabled = changes.enabled.newValue as boolean
@@ -83,11 +84,11 @@ async function main() {
   // 1-way message listener. listens for msgs from the extension popup & service worker
   browser.runtime.onMessage.addListener((message: BrowserMessage) => {
     if (!isDocumentVisible()) {
-      console.debug('received message but document is not visible', message)
+      logger.log('received message but document is not visible', message)
       return
     }
 
-    console.debug('received browser message in content script', message)
+    logger.log('received browser message in content script', message)
     const { type, data = {} } = message
 
     // service worker messages will include whether we should skipEmit or not
@@ -135,7 +136,7 @@ async function main() {
     thePort = port
 
     port.onMessage.addListener((message: BrowserMessage) => {
-      console.debug('content script received port message', message)
+      logger.log('content script received port message', message)
 
       if (message.type === 'checkForVideo') {
         port.postMessage({
@@ -152,6 +153,6 @@ const DELAY_SEC = 2
 
 setTimeout(() => {
   main()
-    .then(() => console.debug('content script loaded'))
-    .catch((error) => console.debug('content script error', error))
+    .then(() => logger.log('content script loaded'))
+    .catch((error) => logger.log('content script error', error))
 }, 1000 * DELAY_SEC)

@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill'
+import { logger } from './utils'
 
 async function main() {
   const scriptEle = document.createElement('script')
@@ -14,6 +15,6 @@ async function main() {
 const DELAY_SEC = 2
 setTimeout(() => {
   main()
-    .then(() => console.debug('netflix content script loaded'))
-    .catch((error) => console.debug('netflix content script load error', error))
+    .then(() => logger.log('netflix content script loaded'))
+    .catch((error) => logger.log('netflix content script load error', error))
 }, DELAY_SEC * 1000)

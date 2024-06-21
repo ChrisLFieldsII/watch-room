@@ -6,6 +6,7 @@ import {
   DefaultVideoPlayer,
   NetflixVideoPlayer,
 } from '../videoPlayers'
+import { logger } from '../utils'
 
 /** Custom event map for extension "video" */
 interface VideoEventMap {
@@ -45,7 +46,7 @@ export class VideoController extends AbstractController {
 
   setEnabled(enabled: boolean): this {
     super.setEnabled(enabled)
-    console.debug('video controller set enabled', enabled)
+    logger.log('video controller set enabled', enabled)
 
     if (enabled) {
       this.findVideo()
@@ -67,19 +68,19 @@ export class VideoController extends AbstractController {
     this.video = $('video')
 
     if (!this.hasVideo()) {
-      console.debug('No video element found')
+      logger.log('No video element found')
       return this
     }
 
     this.selectVideoPlayer()
 
-    console.debug('Found video element', this.video)
+    logger.log('Found video element', this.video)
 
     this.video.on(generateEventTag('play'), () => {
-      console.debug('HTML video "play" event', this.getVideoTime())
+      logger.log('HTML video "play" event', this.getVideoTime())
 
       if (!this.isEnabled) {
-        console.debug('Video is not enabled, ignoring play event')
+        logger.log('Video is not enabled, ignoring play event')
         return
       }
 
@@ -87,10 +88,10 @@ export class VideoController extends AbstractController {
     })
 
     this.video.on(generateEventTag('pause'), () => {
-      console.debug('HTML video "pause" event', this.getVideoTime())
+      logger.log('HTML video "pause" event', this.getVideoTime())
 
       if (!this.isEnabled) {
-        console.debug('Video is not enabled, ignoring pause event')
+        logger.log('Video is not enabled, ignoring pause event')
         return
       }
 
@@ -98,10 +99,10 @@ export class VideoController extends AbstractController {
     })
 
     this.video.on(generateEventTag('seeked'), () => {
-      console.debug('HTML video "seeked" event', this.getVideoTime())
+      logger.log('HTML video "seeked" event', this.getVideoTime())
 
       if (!this.isEnabled) {
-        console.debug('Video is not enabled, ignoring seeked event')
+        logger.log('Video is not enabled, ignoring seeked event')
         return
       }
 
@@ -109,10 +110,10 @@ export class VideoController extends AbstractController {
     })
 
     this.video.on(generateEventTag('ratechange'), () => {
-      console.debug('HTML video "ratechange" event')
+      logger.log('HTML video "ratechange" event')
 
       if (!this.isEnabled) {
-        console.debug('Video is not enabled, ignoring ratechange event')
+        logger.log('Video is not enabled, ignoring ratechange event')
         return
       }
 
@@ -159,10 +160,10 @@ export class VideoController extends AbstractController {
   private selectVideoPlayer() {
     const url = window.location.href
     if (url.includes('netflix')) {
-      console.debug('selecting netflix video player')
+      logger.log('selecting netflix video player')
       this.videoPlayer = new NetflixVideoPlayer()
     } else {
-      console.debug('selecting default HTML5 video player')
+      logger.log('selecting default HTML5 video player')
       const videoEle = this.video?.get(0)
       if (videoEle) {
         this.videoPlayer = new DefaultVideoPlayer(videoEle)

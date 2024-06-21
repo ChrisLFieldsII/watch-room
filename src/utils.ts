@@ -12,6 +12,16 @@ export const STORAGE_KEYS = {
   USER_ID: 'userId',
 }
 
+const ENABLE_DEBUG = process.env.ENABLE_DEBUG === 'true'
+console.log('ENABLE_DEBUG', ENABLE_DEBUG)
+export const logger = {
+  log: (...args: any[]) => {
+    if (!ENABLE_DEBUG) return
+
+    console.debug(...args)
+  },
+}
+
 export async function getStorageValues() {
   const storage = (await browserPolyfill.storage.local.get([
     STORAGE_KEYS.ROOM_ID,
@@ -27,16 +37,16 @@ export async function getStorageValues() {
 
   // generate a room id if one doesn't exist
   if (!roomId) {
-    console.debug('No roomId found in storage, generating one...')
+    logger.log('No roomId found in storage, generating one...')
     roomId = createRoomId()
     await browserPolyfill.storage.local.set({ [STORAGE_KEYS.ROOM_ID]: roomId })
   }
   if (!userId) {
-    console.debug('No userId found in storage, generating one...')
+    logger.log('No userId found in storage, generating one...')
     userId = nanoid()
     await browserPolyfill.storage.local.set({ [STORAGE_KEYS.USER_ID]: userId })
   }
-  console.debug('storage', { roomId, enabled, userId })
+  logger.log('storage', { roomId, enabled, userId })
 
   return { roomId, enabled, userId }
 }
@@ -48,9 +58,9 @@ export async function sendMessageToTab(message: BrowserMessage) {
     if (!tab || !tab.id) throw new Error('No active tab found to send msg')
 
     browserPolyfill.tabs.sendMessage(tab.id, message)
-    console.debug('message sent to tab', message)
+    logger.log('message sent to tab', message)
   } catch (error) {
-    console.debug('error sending sync message', error, message)
+    logger.log('error sending sync message', error, message)
   }
 }
 
@@ -64,10 +74,10 @@ export async function getActiveTab() {
 
 export async function sendBrowserMessage(message: BrowserMessage) {
   try {
-    console.debug('sending browser message', message)
+    logger.log('sending browser message', message)
     await browserPolyfill.runtime.sendMessage(message)
   } catch (error) {
-    console.debug('error sending browser message', error, message)
+    logger.log('error sending browser message', error, message)
   }
 }
 

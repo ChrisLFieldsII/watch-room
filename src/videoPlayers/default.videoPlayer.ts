@@ -1,3 +1,4 @@
+import { logger } from '../utils'
 import { VideoPlayer } from './videoPlayer.types'
 
 /**
@@ -24,7 +25,7 @@ export class DefaultVideoPlayer implements VideoPlayer {
         // this.setVideoTime(time)
       })
       .catch((error) => {
-        console.debug('video play error', error)
+        logger.log('video play error', error)
       })
   }
 }

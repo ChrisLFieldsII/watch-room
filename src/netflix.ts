@@ -2,6 +2,8 @@
   This script is injected into the netflix page so it can access the netflix video player api
 */
 
+import { logger } from './utils'
+
 interface NetflixVideoPlayerActions {
   seek(time: number): void
   pause(): void
@@ -14,7 +16,7 @@ function getNetflixPlayer(): NetflixVideoPlayerActions | null {
     window.netflix?.appContext?.state?.playerApp?.getAPI()?.videoPlayer
 
   if (!videoPlayer) {
-    console.debug('failed to get netflix video player')
+    logger.log('failed to get netflix video player')
     return null
   }
 
@@ -22,7 +24,7 @@ function getNetflixPlayer(): NetflixVideoPlayerActions | null {
     videoPlayer.getAllPlayerSessionIds()[0],
   ) as NetflixVideoPlayerActions
 
-  // console.debug('got netflix video player', player)
+  // logger.log('got netflix video player', player)
 
   return player
 }

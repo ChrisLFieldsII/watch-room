@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client'
 import { AbstractController } from './abstract.controller'
-import { isDocumentVisible } from '../utils'
+import { isDocumentVisible, logger } from '../utils'
 
 interface SocketEventMap {
   playVideo: { time: number }
@@ -59,55 +59,55 @@ export class SocketController extends AbstractController {
 
     this.socket
       .on('connect', () => {
-        console.debug(`Connected to socket with id ${this.socket.id}`)
+        logger.log(`Connected to socket with id ${this.socket.id}`)
       })
       .on('connect_error', (error) => {
         if (this.socket.active) {
           // temporary failure, the socket will automatically try to reconnect
-          console.debug(
+          logger.log(
             'temporary socket connection error. socket is reconnecting...',
           )
         } else {
           // the connection was denied by the server
           // in that case, `socket.connect()` must be manually called in order to reconnect
-          console.debug(
+          logger.log(
             `Failed to establish socket connection to server: ${error.message}`,
           )
         }
       })
       .on('disconnect', (reason) => {
-        console.debug('socket disconnected', reason)
+        logger.log('socket disconnected', reason)
       })
       .on('events', (event) => {
         const { type, data } = event
 
         if (data.userId === this.userId) {
-          console.debug('received event from self, ignoring...')
+          logger.log('received event from self, ignoring...')
           return
         }
         if (data.roomId !== this.roomId) {
-          console.debug('received event from different room, ignoring...')
+          logger.log('received event from different room, ignoring...')
           return
         }
         if (!this.isEnabled) {
-          console.debug('socket is not enabled, ignoring event')
+          logger.log('socket is not enabled, ignoring event')
           return
         }
 
-        console.debug('socket received event', JSON.stringify(event, null, 2))
+        logger.log('socket received event', JSON.stringify(event, null, 2))
 
         const handler = eventHandlers[type]
         if (handler) {
           handler(data)
         } else {
-          console.debug(`No handler for event type ${type}`)
+          logger.log(`No handler for event type ${type}`)
         }
       })
   }
 
   setEnabled(enabled: boolean): this {
     super.setEnabled(enabled)
-    console.debug('socket controller set enabled', enabled)
+    logger.log('socket controller set enabled', enabled)
     if (enabled) {
       this.connect()
     } else {
@@ -120,13 +120,13 @@ export class SocketController extends AbstractController {
    * Creates the socket connection and sets up event listeners
    */
   connect = () => {
-    console.debug('connecting to socket...')
+    logger.log('connecting to socket...')
     this.socket.connect()
     return this
   }
 
   disconnect = () => {
-    console.debug('disconnecting from socket...')
+    logger.log('disconnecting from socket...')
     this.socket.disconnect()
     return this
   }
@@ -137,7 +137,7 @@ export class SocketController extends AbstractController {
     skip = false,
   ) => {
     if (!skip) {
-      console.debug('emitting event', type, data)
+      logger.log('emitting event', type, data)
       this.socket.emit('events', {
         type,
         data: { ...data, userId: this.userId, roomId: this.roomId },
@@ -168,14 +168,14 @@ export class SocketController extends AbstractController {
    */
   startHeartbeat() {
     if (this.heartbeatInterval) {
-      console.debug('heartbeat already started')
+      logger.log('heartbeat already started')
       return
     }
 
     this.heartbeatInterval = setInterval(
       () => {
         if (!this.isConnected()) {
-          console.debug('socket is not connected, skipping heartbeat')
+          logger.log('socket is not connected, skipping heartbeat')
           return
         }
 

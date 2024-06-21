@@ -10,6 +10,7 @@ import {
   getActiveTab,
   BrowserMessage,
   GetSocketStatusData,
+  logger,
 } from './utils'
 
 const extensionPort = browser.runtime.connect()
@@ -96,7 +97,7 @@ function renderPowerBtn(enabled: boolean) {
 
   syncEnabledEle.on('click', async () => {
     const newEnabled = !syncEnabledEle.hasClass('icon-on')
-    console.debug('Sync enabled clicked', newEnabled)
+    logger.log('Sync enabled clicked', newEnabled)
     browser.storage.local.set({ [STORAGE_KEYS.ENABLED]: newEnabled })
     if (newEnabled) {
       enable()
@@ -154,7 +155,7 @@ function hookupSupportLink() {
         url: supportLink.attr('href'),
       })
       .catch((error) => {
-        console.debug('Error opening support link', error)
+        logger.log('Error opening support link', error)
       })
   })
 }
@@ -236,7 +237,7 @@ async function main() {
   } satisfies BrowserMessage)
 
   extensionPort.onMessage.addListener((message: BrowserMessage) => {
-    console.debug('action received port message', message)
+    logger.log('action received port message', message)
     if (message.type === 'getSocketStatus') {
       const data = message.data as GetSocketStatusData
 
@@ -246,5 +247,5 @@ async function main() {
 }
 
 main()
-  .then(() => console.debug('browser action script ran successfully'))
-  .catch((error) => console.debug('error running browser action script', error))
+  .then(() => logger.log('browser action script ran successfully'))
+  .catch((error) => logger.log('error running browser action script', error))
