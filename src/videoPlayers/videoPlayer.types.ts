@@ -1,7 +1,6 @@
 export interface VideoPlayer {
-  // getVideoTime(): number
+  /** also used for seek */
   setVideoTime(time: number): void
-  // play(time:number): void
-  // pause(time:number): void
-  // seek(time:number): void
+  play(time: number): void
+  pause(time: number): void
 }

@@ -21,19 +21,17 @@ let skipEmit = false
  * helper to handle skipEmit logic
  */
 function sendBrowserMessageWrapper(message: BrowserMessage) {
+  // if skippingEmit, we dont want to send browser message to service worker for socket to emit it
   if (skipEmit) {
     skipEmit = false
     return
   }
 
   sendBrowserMessage(message)
+}
 
-  // post messages to window for specially injected scripts to listen to (Netflix)
-  const windowMessage = {
-    ...message,
-    type: `cfiiWatchRoom.${message.type}`,
-  }
-  window.postMessage(windowMessage, '*')
+function postMessage({ type, data }: { type: string; data: any }) {
+  window.postMessage({ type, data, svc: 'cfiiWatchRoom' }, '*')
 }
 
 async function main() {
@@ -103,12 +101,15 @@ async function main() {
       })
     }
     if (type === 'play') {
+      postMessage({ type: 'play', data: { time: data.time } })
       videoController.play(data.time)
     }
     if (type === 'pause') {
+      postMessage({ type: 'pause', data: { time: data.time } })
       videoController.pause(data.time)
     }
     if (type === 'seeked') {
+      postMessage({ type: 'seeked', data: { time: data.time } })
       videoController.seek(data.time)
     }
     if (type === 'playbackRateChanged') {

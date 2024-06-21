@@ -1,4 +1,5 @@
 import $ from 'jquery'
+
 import { AbstractController } from './abstract.controller'
 import {
   VideoPlayer,
@@ -34,8 +35,7 @@ interface CtorParams {
 
 export class VideoController extends AbstractController {
   private video: JQuery<HTMLVideoElement> | null = null
-  private lastAction: 'play' | 'pause' | null = null
-  // private videoPlayer: VideoPlayer  = new DefaultVideoPlayer(null)
+  private videoPlayer: VideoPlayer = new DefaultVideoPlayer(null!) // assigned in findVideo
 
   constructor(private params: CtorParams) {
     super()
@@ -71,11 +71,11 @@ export class VideoController extends AbstractController {
       return this
     }
 
+    this.selectVideoPlayer()
+
     console.debug('Found video element', this.video)
 
     this.video.on(generateEventTag('play'), () => {
-      this.lastAction = 'play'
-
       console.debug('HTML video "play" event', this.getVideoTime())
 
       if (!this.isEnabled) {
@@ -87,8 +87,6 @@ export class VideoController extends AbstractController {
     })
 
     this.video.on(generateEventTag('pause'), () => {
-      this.lastAction = 'pause'
-
       console.debug('HTML video "pause" event', this.getVideoTime())
 
       if (!this.isEnabled) {
@@ -104,14 +102,6 @@ export class VideoController extends AbstractController {
 
       if (!this.isEnabled) {
         console.debug('Video is not enabled, ignoring seeked event')
-        return
-      }
-      // NOTE: calling play/pause makes seeked event fire since it calls `setVideoTime` so we use `lastAction` to prevent emitting seeked in those cases
-      if (this.lastAction !== null) {
-        console.debug(
-          `Last action was ${this.lastAction} so preventing seeked event`,
-        )
-        this.lastAction = null
         return
       }
 
@@ -138,28 +128,15 @@ export class VideoController extends AbstractController {
 
   // NOTE: any time this is called, it will also emit a seeked event
   setVideoTime(time: number) {
-    this.video?.prop('currentTime', time)
+    this.videoPlayer.setVideoTime(time)
   }
 
   play(time: number) {
-    this.lastAction = 'play'
-
-    this.video
-      ?.get(0)
-      ?.play()
-      .then(() => {
-        // set video time only works after play is called
-        this.setVideoTime(time)
-        console.debug('video play success')
-      })
-      .catch((error) => console.debug('video play error', error))
+    this.videoPlayer.play(time)
   }
 
   pause(time: number) {
-    this.lastAction = 'pause'
-
-    this.video?.get(0)?.pause()
-    this.setVideoTime(time)
+    this.videoPlayer.pause(time)
   }
 
   sync(url: string) {
@@ -177,6 +154,20 @@ export class VideoController extends AbstractController {
   setPlaybackRate(rate: number) {
     const video = this.video?.get(0)
     if (video) video.playbackRate = rate
+  }
+
+  private selectVideoPlayer() {
+    const url = window.location.href
+    if (url.includes('netflix')) {
+      console.debug('selecting netflix video player')
+      this.videoPlayer = new NetflixVideoPlayer()
+    } else {
+      console.debug('selecting default HTML5 video player')
+      const videoEle = this.video?.get(0)
+      if (videoEle) {
+        this.videoPlayer = new DefaultVideoPlayer(videoEle)
+      }
+    }
   }
 }
 

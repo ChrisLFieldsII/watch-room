@@ -5,7 +5,6 @@ async function main() {
   const src = browser.runtime.getURL('dist/netflix.js')
   scriptEle.src = src
   scriptEle.onload = () => {
-    console.debug('netflix script loaded')
     scriptEle.remove()
   }
   const rootEle = document.head || document.documentElement
@@ -16,5 +15,5 @@ const DELAY_SEC = 2
 setTimeout(() => {
   main()
     .then(() => console.debug('netflix content script loaded'))
-    .catch((error) => console.debug('netflix script load error', error))
+    .catch((error) => console.debug('netflix content script load error', error))
 }, DELAY_SEC * 1000)
