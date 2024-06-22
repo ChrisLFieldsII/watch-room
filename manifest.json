@@ -49,8 +49,5 @@
       "resources": ["dist/netflix.js"],
       "matches": ["https://www.netflix.com/*"]
     }
-  ],
-  "options_ui": {
-    "page": "options/index.html"
-  }
+  ]
 }
