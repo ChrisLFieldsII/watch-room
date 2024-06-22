@@ -4,3 +4,5 @@ dist/
 node_modules/
 .env.dev
 .env.prod
+# release artifacts stored by scripts that are temporary
+release-artifacts/

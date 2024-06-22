@@ -20,6 +20,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, '../dist'),
     filename: '[name].js',
+    clean: true, // clean build dir before build
   },
   resolve: {
     extensions: ['.ts', '.js'],

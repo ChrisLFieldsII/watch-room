@@ -6,7 +6,8 @@
     "build:prod": "ENV=prod webpack --config webpack/webpack.config.js",
     "watch:dev": "yarn build:dev -w",
     "watch:prod": "yarn build:prod -w",
-    "dev": "web-ext run"
+    "dev": "web-ext run",
+    "prepare-release": "bash scripts/prepare-release.sh"
   },
   "dependencies": {
     "jquery": "^3.7.1",

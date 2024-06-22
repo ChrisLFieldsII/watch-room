@@ -13,7 +13,7 @@ export const STORAGE_KEYS = {
 }
 
 const ENABLE_DEBUG = process.env.ENABLE_DEBUG === 'true'
-console.log('ENABLE_DEBUG', ENABLE_DEBUG)
+// console.log('ENABLE_DEBUG', ENABLE_DEBUG, process.env.ENABLE_DEBUG)
 export const logger = {
   log: (...args: any[]) => {
     if (!ENABLE_DEBUG) return
