@@ -4,7 +4,7 @@
   "description": "WatchRoom allows many users to join a room where they can watch a video together. When one user plays/pauses the video, all other users video will play/pause at the same time",
   "version": "0.0.1",
   "minimum_chrome_version": "116",
-  "permissions": ["storage", "clipboardWrite", "scripting"],
+  "permissions": ["storage", "clipboardWrite"],
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
