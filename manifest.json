@@ -28,7 +28,8 @@
     },
     {
       "matches": ["https://www.netflix.com/*"],
-      "js": ["dist/netflixContentScript.js"]
+      "js": ["dist/netflixContentScript.js"],
+      "my-description": "Netflix crashes when setting currentTime on video element, so have to inject a script that can access the raw window object to access and use window.netflix"
     }
   ],
   "background": {
