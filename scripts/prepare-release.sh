@@ -9,8 +9,6 @@ RED='\033[0;31m'          # Red
 YELLOW='\033[0;33m'       # Yellow
 NO_COLOR='\033[0m'       # Text Reset
 
-# TODO: add check for git status and ensure it's clean before running this script   
-
 #REGION: parse flags. pulled from here: https://stackoverflow.com/a/14203146/5434172
 while test $# -gt 0; do
     case "$1" in
@@ -62,6 +60,11 @@ while IFS= read -r line; do
     fi
 done <<< "$envFile"
 
+# NOTE: all checks have passed at this point
+
+#REGION: clean up release-artifacts dir
+rm -r release-artifacts/*
+
 #REGION: build the extension code
 echo -e "\n${NO_COLOR}Running yarn build:prod"
 yarn build:prod
@@ -69,6 +72,7 @@ yarn build:prod
 #REGION: zip extension and mv to release-artifacts dir
 echo -e "\n${NO_COLOR}Zipping up the extension and moving to release-artifacts dir"
 zip -r watchroomext.zip dist browserAction icons manifest.json 
-mv watchroomext.zip release-artifacts/watchroomext.zip
+filename=$([[ $ALLOW_DEBUG == *"true"* ]] && echo "watchroomext-debug.zip" || echo "watchroomext.zip")
+mv watchroomext.zip "release-artifacts/${filename}"
 
 echo -e "\n✅ prepare-release complete"
