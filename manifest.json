@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "WatchRoom",
-  "description": "WatchRoom allows many users to join a room where they can watch a video together. When one user plays/pauses/seeks the video, all other users video will play/pause/seek at the same time",
-  "version": "0.0.1",
+  "description": "WatchRoom allows many users from different locations to join a room where they can watch the same video together synchronized",
+  "version": "1.0.0",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "clipboardWrite"],
   "icons": {
