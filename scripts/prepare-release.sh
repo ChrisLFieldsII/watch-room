@@ -1,13 +1,35 @@
-
 echo -e '🟡 running prepare-release\n'
+
+#REGION: variables
+ALLOW_DEBUG="false"
 
 #REGION: colors
 RED='\033[0;31m'          # Red
 YELLOW='\033[0;33m'       # Yellow
 NO_COLOR='\033[0m'       # Text Reset
 
-#REGION: read .env.prod and ensure values look as expected
+# TODO: add check for git status and ensure it's clean before running this script   
 
+#REGION: parse flags. pulled from here: https://stackoverflow.com/a/14203146/5434172
+while test $# -gt 0; do
+  case "$1" in
+    --allow-debug)
+        # allow .env.prod to have ENABLE_DEBUG set to true       
+        # shift past the flag. no need to do another shift past the value
+      shift
+      ALLOW_DEBUG="true"
+      ;;
+    # --action*)
+    #   echo 'passed --action'
+    #   shift
+    #   ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+#REGION: read .env.prod and ensure values look as expected
 envFile=`cat .env.prod`
 echo -e 'Using the following .env.prod file:'
 while IFS= read -r line; do
@@ -25,7 +47,7 @@ while IFS= read -r line; do
         exit 1
     fi
 
-    if [[ $line == *"ENABLE_DEBUG"* && $line == *"true"* ]]; then
+    if [[ $line == *"ENABLE_DEBUG"* && $line == *"true"* && $ALLOW_DEBUG == *"false"* ]]; then
         echo -e "${RED}Error: ENABLE_DEBUG is set to true. Please update .env.prod to use the correct ENABLE_DEBUG value of false"
         exit 1
     fi
