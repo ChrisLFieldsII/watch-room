@@ -13,7 +13,18 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["dist/contentScript.js"]
+      "js": ["dist/contentScript.js"],
+      "exclude_matches": [
+        "https://static.crunchyroll.com/vilos-v2/web/vilos/player.html*"
+      ]
+    },
+    {
+      "matches": [
+        "https://static.crunchyroll.com/vilos-v2/web/vilos/player.html*"
+      ],
+      "js": ["dist/contentScript.js"],
+      "all_frames": true,
+      "my-description": "Crunchyroll uses an iframe to load the video player at the matched url, so this rule covers this use case without exposing the 'all_frames' rule to all urls"
     },
     {
       "matches": ["https://www.netflix.com/*"],
