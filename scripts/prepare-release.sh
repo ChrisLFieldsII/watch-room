@@ -2,6 +2,7 @@ echo -e '🟡 running prepare-release\n'
 
 #REGION: variables
 ALLOW_DEBUG="false"
+IGNORE_GIT="false"
 
 #REGION: colors
 RED='\033[0;31m'          # Red
@@ -12,22 +13,30 @@ NO_COLOR='\033[0m'       # Text Reset
 
 #REGION: parse flags. pulled from here: https://stackoverflow.com/a/14203146/5434172
 while test $# -gt 0; do
-  case "$1" in
-    --allow-debug)
-        # allow .env.prod to have ENABLE_DEBUG set to true       
-        # shift past the flag. no need to do another shift past the value
-      shift
-      ALLOW_DEBUG="true"
-      ;;
-    # --action*)
-    #   echo 'passed --action'
-    #   shift
-    #   ;;
-    *)
-      break
-      ;;
-  esac
+    case "$1" in
+        --allow-debug)
+            # allow .env.prod to have ENABLE_DEBUG set to true       
+
+            shift # shift past the flag. no need to do another shift past the value
+            ALLOW_DEBUG="true"
+        ;;
+        --ignore-git)
+            # ignore git status check
+
+            shift
+            IGNORE_GIT="true"
+        ;;
+        *)
+            break
+        ;;
+    esac
 done
+
+#REGION: ensure git status is clean
+if [[ $(git status --porcelain) && $IGNORE_GIT == *"false"* ]]; then
+    echo -e "${RED}Error: git status is not clean. Please commit or stash your changes before running this script"
+    exit 1
+fi
 
 #REGION: read .env.prod and ensure values look as expected
 envFile=`cat .env.prod`
