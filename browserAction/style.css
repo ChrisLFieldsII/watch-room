@@ -31,12 +31,19 @@ a {
   display: block;
 }
 
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+/* TODO: refactor to just be `align-center` */
 .row {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
+/* TODO: rename to `justify-center` */
 .center {
   justify-content: center;
 }
