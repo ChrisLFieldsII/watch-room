@@ -6,6 +6,11 @@ import {
   DefaultVideoPlayer,
   NetflixVideoPlayer,
 } from '../videoPlayers'
+import {
+  AmazonPrimeVideoFinder,
+  DefaultVideoFinder,
+  VideoFinder,
+} from '../videoFinders'
 import { logger } from '../utils'
 
 /** Custom event map for extension "video" */
@@ -65,7 +70,7 @@ export class VideoController extends AbstractController {
   findVideo() {
     const { eventHandlers } = this.params
 
-    this.video = $('video')
+    this.video = this.selectVideoFinder().findVideo()
 
     if (!this.hasVideo()) {
       logger.log('No video element found')
@@ -168,6 +173,17 @@ export class VideoController extends AbstractController {
       if (videoEle) {
         this.videoPlayer = new DefaultVideoPlayer(videoEle)
       }
+    }
+  }
+
+  private selectVideoFinder(): VideoFinder {
+    const url = window.location.href.toLowerCase()
+    if (url.includes('amazon') && url.includes('video')) {
+      logger.log('selecting amazon video finder')
+      return new AmazonPrimeVideoFinder()
+    } else {
+      logger.log('selecting default video finder')
+      return new DefaultVideoFinder()
     }
   }
 }
