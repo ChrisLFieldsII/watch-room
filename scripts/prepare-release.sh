@@ -66,7 +66,7 @@ done <<< "$envFile"
 rm -r release-artifacts/*
 
 #REGION: build the extension code
-echo -e "\n${NO_COLOR}Running yarn build:prod"
+echo -e "\n${NO_COLOR}Running yarn build:prod..."
 yarn build:prod
 
 #REGION: zip extension and mv to release-artifacts dir
@@ -74,5 +74,11 @@ echo -e "\n${NO_COLOR}Zipping up the extension and moving to release-artifacts d
 zip -r watchroomext.zip dist browserAction icons manifest.json 
 filename=$([[ $ALLOW_DEBUG == *"true"* ]] && echo "watchroomext-debug.zip" || echo "watchroomext.zip")
 mv watchroomext.zip "release-artifacts/${filename}"
+
+#REGION: git tag
+echo -e "\n${NO_COLOR}Creating git tag..."
+TAG_VERSION=$(node -p "require('./manifest.json').version")
+git tag -a "v${TAG_VERSION}" -m "v${TAG_VERSION}" -f
+echo "Remember to manually push tag to remote: git push origin v${TAG_VERSION}"
 
 echo -e "\n✅ prepare-release complete"
