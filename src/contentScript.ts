@@ -88,7 +88,10 @@ async function main() {
       return
     }
 
-    logger.log('received browser message in content script', message)
+    logger.log(
+      'received browser message in content script: ',
+      JSON.stringify(message, null, 2),
+    )
     const { type, data = {} } = message
 
     // service worker messages will include whether we should skipEmit or not

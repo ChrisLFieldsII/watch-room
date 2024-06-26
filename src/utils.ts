@@ -74,7 +74,7 @@ export async function getActiveTab() {
 
 export async function sendBrowserMessage(message: BrowserMessage) {
   try {
-    logger.log('sending browser message', message)
+    logger.log('sending browser message: ', JSON.stringify(message, null, 2))
     await browserPolyfill.runtime.sendMessage(message)
   } catch (error) {
     logger.log('error sending browser message', error, message)
