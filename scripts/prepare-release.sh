@@ -81,4 +81,4 @@ TAG_VERSION=$(node -p "require('./manifest.json').version")
 git tag -a "v${TAG_VERSION}" -m "v${TAG_VERSION}" -f
 echo "Remember to manually push tag to remote: git push origin v${TAG_VERSION}"
 
-echo -e "\n✅ prepare-release complete"
+echo -e "\n✅ prepare-release complete. view it at release-artifacts/${filename}"
