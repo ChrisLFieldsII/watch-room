@@ -162,6 +162,17 @@ export class VideoController extends AbstractController {
     if (video) video.playbackRate = rate
   }
 
+  getSyncUrl(): string {
+    const url = window.location.href
+
+    // croll requires injecting content script into iframe which will have a different url
+    if (url.includes('https://static.crunchyroll.com/vilos-v2')) {
+      return 'https://www.crunchyroll.com/'
+    }
+
+    return url
+  }
+
   private selectVideoPlayer() {
     const url = window.location.href
     if (url.includes('netflix')) {

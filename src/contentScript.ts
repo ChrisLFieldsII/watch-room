@@ -124,7 +124,7 @@ async function main() {
       if (!data.url) {
         sendBrowserMessageWrapper({
           type: 'sync',
-          data: { url: window.location.href },
+          data: { url: videoController.getSyncUrl() },
         })
       }
       // received msg from service worker socket event, sync the video
