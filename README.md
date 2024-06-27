@@ -1,23 +1,33 @@
-# WatchRoom
+# WatchRoom - Watch Together
 
 ## How to dev
 
+### Extension
+
+- add `.env.dev` and `.env.prod` to root according to `.env.template`
 - run `yarn dev` to load the web extension into firefox with hot reloading
+- you will need to load an unpacked extension for chrome following [this](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked)
 - run `yarn watch` to start the typescript watch process
+- you may now code away! thanks to `web-ext`, Firefox will hot reload on code changes, but Chrome will require "Updating" the extension through "Manage extension"
+
+### Server
+
+- cd into `server` dir
+- add `.env.dev` and `.env.prod` according to `.env.template`
+- run yarn `start:dev`
 
 ## Debugging
 
 Follow this link to debug: https://extensionworkshop.com/documentation/develop/debugging/
 
-Firefox:
+### Firefox:
 
 - about:debugging
 - about:addons
 
-## Philosophies
+### Chrome:
 
-- The extension should listen to the video player events rather than re-inventing the wheel and having controls in the extension browserAction
-- not doing a chat feature or anything like that. there are plenty other great apps to use for chatting while watching video
+- chrome://extensions
 
 ## Permissions required and why
 
