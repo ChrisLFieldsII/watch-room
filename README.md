@@ -52,3 +52,8 @@ Follow this link to debug: https://extensionworkshop.com/documentation/develop/d
   - in `about:config`, ensure `security.enterprise_roots.enabled` is `true`
   - in `about:preferences#privacy`, scroll to "Certificates" and click "View Certificates > Authorities > Import". Your local CA should be in `~/Library/Application Support/mkcert`
 - may need to reload the extension if api calls to https still fail
+
+## Release
+
+- Run `yarn prepare-release`
+- A `.zip` will be put into the `release-artifacts` dir
