@@ -2,9 +2,15 @@
 
 ## How to dev
 
+### Dev Env
+
+- I used nodejs `20.11.1` at time of dev. Any version after `18` should work
+- Uses `yarn` as pkg manager
+
 ### Extension
 
 - add `.env.dev` and `.env.prod` to root according to `.env.template`
+- run `yarn install`
 - run `yarn dev` to load the web extension into firefox with hot reloading
 - you will need to load an unpacked extension for chrome following [this](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked)
 - run `yarn watch` to start the typescript watch process
@@ -14,6 +20,7 @@
 
 - cd into `server` dir
 - add `.env.dev` and `.env.prod` according to `.env.template`
+- run `yarn install`
 - run yarn `start:dev`
 
 ## Debugging
