@@ -83,7 +83,7 @@ export async function sendBrowserMessage(message: BrowserMessage) {
 
 export interface BrowserMessage {
   type:
-    | 'sync'
+    | 'sync' // TODO: rename this to "syncUrl"
     | 'findVideo'
     | 'checkForVideo'
     | 'play'

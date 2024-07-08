@@ -44,7 +44,7 @@ function renderJoinRoomInput({
   })
 }
 
-function renderSyncBtn() {
+function renderSyncUrlBtn() {
   const syncBtn = $('#sync-url-btn')
   syncBtn.on('click', async () => {
     sendMessageToTab({ type: 'sync' })
@@ -184,6 +184,13 @@ async function renderVideoStatus(foundVideo: boolean) {
   }
 }
 
+async function hookupSyncVideoTimeBtn() {
+  const syncTimeBtn = $('#sync-time-btn')
+  syncTimeBtn.on('click', async () => {
+    sendMessageToTab({ type: 'seeked' } satisfies BrowserMessage)
+  })
+}
+
 async function main() {
   const { roomId, enabled } = await getStorageValues()
 
@@ -210,7 +217,8 @@ async function main() {
     },
   })
 
-  renderSyncBtn()
+  renderSyncUrlBtn()
+  hookupSyncVideoTimeBtn()
 
   // default to false until port responds to check for video
   renderVideoStatus(false)

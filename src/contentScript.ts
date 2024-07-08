@@ -113,8 +113,16 @@ async function main() {
       videoController.pause(data.time)
     }
     if (type === 'seeked') {
-      postMessage({ type: 'seeked', data: { time: data.time } })
-      videoController.seek(data.time)
+      // received msg from popup, use contentScript to get video data and send it to background script for socket to emit
+      if (!data.time) {
+        sendBrowserMessageWrapper({
+          type: 'seeked',
+          data: { time: videoController.getVideoTime() },
+        })
+      } else {
+        postMessage({ type: 'seeked', data: { time: data.time } })
+        videoController.seek(data.time)
+      }
     }
     if (type === 'playbackRateChanged') {
       videoController.setPlaybackRate(data.playbackRate)
