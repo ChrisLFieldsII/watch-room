@@ -9,6 +9,8 @@ interface SocketEventMap {
   sync: { url: string }
   playbackRateChanged: { playbackRate: number }
   heartbeat: {}
+  joinRoom: { roomId: string }
+  leaveRoom: { roomId: string }
 }
 
 export type SocketEventKey = keyof SocketEventMap
@@ -122,6 +124,7 @@ export class SocketController extends AbstractController {
   connect = () => {
     logger.log('connecting to socket...')
     this.socket.connect()
+    this.emitJoinRoom()
     return this
   }
 
@@ -148,6 +151,7 @@ export class SocketController extends AbstractController {
 
   setRoomId = (roomId: string) => {
     this.roomId = roomId
+    this.emitJoinRoom()
     return this
   }
 
@@ -191,5 +195,13 @@ export class SocketController extends AbstractController {
       clearInterval(this.heartbeatInterval)
       this.heartbeatInterval = null
     }
+  }
+
+  /**
+   * joining a room will leave the current room and join the new room on the server side.
+   * disconnecting will automatically leave all rooms
+   */
+  private emitJoinRoom = () => {
+    this.emit('joinRoom', { roomId: this.roomId })
   }
 }

@@ -48,6 +48,12 @@ const socketController = new SocketController({
     heartbeat: () => {
       logger.log('received heartbeat')
     },
+    joinRoom: (data: SocketEventData<'joinRoom'>) => {
+      logger.log('joining room', data)
+    },
+    leaveRoom: (data: SocketEventData<'leaveRoom'>) => {
+      logger.log('leaving room', data)
+    },
   },
 })
 
@@ -113,6 +119,7 @@ browser.runtime.onConnect.addListener((port) => {
 
 async function main() {
   const { roomId, userId, enabled } = await getStorageValues()
+  // NOTE: currently a nasty race condition but setRoomId must be called before setEnabled, which calls connect(), which emits joinRoom event where the roomId is needed
   socketController.setRoomId(roomId)
   socketController.setUserId(userId)
   socketController.setEnabled(enabled)
