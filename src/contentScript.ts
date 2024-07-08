@@ -119,7 +119,9 @@ async function main() {
           type: 'seeked',
           data: { time: videoController.getVideoTime() },
         })
-      } else {
+      }
+      // received msg from socket (service worker), seek the video
+      else {
         postMessage({ type: 'seeked', data: { time: data.time } })
         videoController.seek(data.time)
       }
