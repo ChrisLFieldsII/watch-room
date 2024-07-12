@@ -464,6 +464,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bitauth/libauth@npm:^1.17.1":
+  version: 1.19.1
+  resolution: "@bitauth/libauth@npm:1.19.1"
+  checksum: ee6979916e4f58064982e595b29de72ba6fc2b50284fabfc62122452eee8a7b52d2ddc110f0d2ae65d94b944cf8898eabe527c31a73db2521a88066c6c487d56
+  languageName: node
+  linkType: hard
+
+"@chrislfieldsii/cloud-logger@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@chrislfieldsii/cloud-logger@npm:1.0.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40chrislfieldsii%2Fcloud-logger%2F1.0.0%2F0027aeff56c2a7546692de0b78dd3cff53c4dcbb"
+  dependencies:
+    "@bitauth/libauth": "npm:^1.17.1"
+    cross-fetch: "npm:^4.0.0"
+  checksum: ad4577dbdb01a8872b0363f242e7d49e0a8cc6d889f1ed491ae89cef57f6d9e65d21c1d6f6303d9c8b384564c0890c7b84ecfcf42ffe3a109224b6475778be67
+  languageName: node
+  linkType: hard
+
 "@colors/colors@npm:1.5.0":
   version: 1.5.0
   resolution: "@colors/colors@npm:1.5.0"
@@ -2730,6 +2747,15 @@ __metadata:
   version: 1.1.1
   resolution: "create-require@npm:1.1.1"
   checksum: 157cbc59b2430ae9a90034a5f3a1b398b6738bf510f713edc4d4e45e169bc514d3d99dd34d8d01ca7ae7830b5b8b537e46ae8f3c8f932371b0875c0151d7ec91
+  languageName: node
+  linkType: hard
+
+"cross-fetch@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "cross-fetch@npm:4.0.0"
+  dependencies:
+    node-fetch: "npm:^2.6.12"
+  checksum: 386727dc4c6b044746086aced959ff21101abb85c43df5e1d151547ccb6f338f86dec3f28b9dbddfa8ff5b9ec8662ed2263ad4607a93b2dc354fb7fe3bbb898a
   languageName: node
   linkType: hard
 
@@ -5376,7 +5402,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.1":
+"node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.12":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
@@ -6178,6 +6204,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "server@workspace:."
   dependencies:
+    "@chrislfieldsii/cloud-logger": "npm:^1.0.0"
     "@nestjs/cli": "npm:^10.0.0"
     "@nestjs/common": "npm:^10.0.0"
     "@nestjs/config": "npm:^3.2.2"

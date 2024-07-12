@@ -8,6 +8,7 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { AppService } from 'src/app.service';
 
 interface SocketMessage {
   type: string;
@@ -22,6 +23,8 @@ interface SocketMessage {
 export class EventsGateway implements OnGatewayInit, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+
+  constructor(private readonly appService: AppService) {}
 
   private numConnections = 0;
   private analyticsInterval: NodeJS.Timeout;
@@ -82,7 +85,10 @@ export class EventsGateway implements OnGatewayInit, OnGatewayDisconnect {
       const analytics = {
         numConnections: this.numConnections,
       };
-      console.log('analytics', JSON.stringify(analytics, null, 2));
+      // console.log('analytics', JSON.stringify(analytics, null, 2));
+      this.appService.cloudLogger.log(JSON.stringify({ analytics }, null, 2), {
+        sendNow: true,
+      });
     };
 
     this.analyticsInterval = setInterval(
