@@ -25,7 +25,7 @@
     "docker:push": "docker push public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server",
     "ec2:setup-docker": "sudo yum update -y && sudo yum install docker -y && sudo systemctl start docker && sudo systemctl status docker",
     "ec2:docker-pull": "sudo docker pull public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server",
-    "ec2:docker-run": "sudo docker run -p 443:3000/tcp --mount type=bind,src=/etc/letsencrypt,dst=/etc/letsencrypt public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server",
+    "ec2:docker-run": "sudo docker run -p 443:3000/tcp --name prod --mount type=bind,src=/etc/letsencrypt,dst=/etc/letsencrypt public.ecr.aws/f8s4h7z9/chrislfieldsii:watch-room-server",
     "ec2:docker-prune": "sudo docker system prune -a"
   },
   "scriptsDocs": {
