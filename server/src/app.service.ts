@@ -10,6 +10,7 @@ export class AppService {
   });
 
   getHello(): string {
+    this.cloudLogger.log('Server is healthy', { sendNow: true });
     return 'Hello World!';
   }
 }

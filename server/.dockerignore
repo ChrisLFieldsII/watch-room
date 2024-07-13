@@ -2,3 +2,5 @@ test/
 node_modules/
 dist/
 .yarn/
+src/secrets/
+.npmrc
