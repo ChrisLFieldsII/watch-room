@@ -4,3 +4,7 @@ dist/
 .yarn/
 src/secrets/
 .npmrc
+.DS_Store
+.eslintrc.js
+README.md
+*.png
