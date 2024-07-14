@@ -78,7 +78,8 @@ mv watchroomext.zip "release-artifacts/${filename}"
 #REGION: git tag
 echo -e "\n${NO_COLOR}Creating git tag..."
 TAG_VERSION=$(node -p "require('./manifest.json').version")
-git tag -a "v${TAG_VERSION}" -m "v${TAG_VERSION}" -f
+COMMIT_MSG=$(git log -1 --oneline | cut -c 8-$COLUMNS | xargs)
+git tag -a "v${TAG_VERSION}" -m "v${TAG_VERSION} ${COMMIT_MSG}" -f
 echo "Remember to manually push tag to remote: git push origin v${TAG_VERSION}"
 
 echo -e "\n✅ prepare-release complete. view it at release-artifacts/${filename}"
