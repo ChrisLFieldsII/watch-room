@@ -206,3 +206,11 @@ a {
   font-size: 16px;
 }
 /* #endregion fonts */
+
+/* #region browser specific */
+@supports (-moz-appearance: none) {
+  .link {
+    font-size: 12px;
+  }
+}
+/* #endregion browser specific */

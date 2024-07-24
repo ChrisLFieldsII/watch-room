@@ -75,7 +75,7 @@ zip -r watchroomext.zip dist browserAction icons manifest.json
 filename=$([[ $ALLOW_DEBUG == *"true"* ]] && echo "watchroomext-debug.zip" || echo "watchroomext.zip")
 mv watchroomext.zip "release-artifacts/${filename}"
 
-#REGION: git tag
+#REGION: git tag. make sure to update manifest.json version first. the tag msg will be the last commit msg
 echo -e "\n${NO_COLOR}Creating git tag..."
 TAG_VERSION=$(node -p "require('./manifest.json').version")
 COMMIT_MSG=$(git log -1 --oneline | cut -c 8-$COLUMNS | xargs)

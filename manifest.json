@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "WatchRoom",
   "description": "WatchRoom allows many users from different locations to join a room where they can watch the same video together synchronized",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "clipboardWrite"],
   "browser_specific_settings": {

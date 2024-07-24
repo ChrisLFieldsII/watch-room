@@ -145,14 +145,14 @@ async function renderSocketStatus(isConnected: boolean) {
  * Hookup support link to open in new tab.
  * Anchor element didnt work in chrome so using JS
  */
-function hookupSupportLink() {
-  const supportLink = $('#support-link')
-  supportLink.on('click', async (e) => {
+function hookupAnchorElement(eleId: string) {
+  const link = $(`#${eleId}`)
+  link.on('click', async (e) => {
     e.preventDefault()
 
     browser.tabs
       .create({
-        url: supportLink.attr('href'),
+        url: link.attr('href'),
       })
       .catch((error) => {
         logger.log('Error opening support link', error)
@@ -223,7 +223,8 @@ async function main() {
   // default to false until port responds to check for video
   renderVideoStatus(false)
 
-  hookupSupportLink()
+  hookupAnchorElement('support-link')
+  hookupAnchorElement('donation-link')
 
   // set up 2 way connection between action and content script
   const tab = await getActiveTab()
