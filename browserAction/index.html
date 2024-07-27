@@ -120,6 +120,66 @@
 
     <hr class="my-16" />
 
+    <!-- permissions status indicator -->
+    <div
+      class="row center px-16 mb-8"
+      title="The extension must have the necessary permissions to function properly"
+    >
+      <span class="roboto-regular mr-4">Permissions status: </span>
+      <!-- circle check icon -->
+      <svg
+        id="perms-status-icon-on"
+        class="icon hidden"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 512 512"
+      >
+        <!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+        <path
+          d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"
+        />
+      </svg>
+
+      <!-- warning icon -->
+      <span
+        class="row center"
+        title="Some permissions are granted, but some are missing. This requires manual intervention to fix. Please right click the extension icon, go to 'Manage Extension' and ensure all permissions are granted and the extension can access all sites."
+      >
+        <svg
+          id="perms-status-icon-warning"
+          class="icon hidden icon-warning"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 512 512"
+        >
+          <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+          <path
+            d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24l0 112c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-112c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"
+          />
+        </svg>
+      </span>
+
+      <!-- circle x icon -->
+      <svg
+        id="perms-status-icon-off"
+        class="icon icon-off hidden"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 512 512"
+      >
+        <!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+        <path
+          d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"
+        />
+      </svg>
+
+      <!-- <span>Some permissions are missing.</span> -->
+      <button
+        id="prompt-perms-btn"
+        class="btn-inline ml-16 hidden"
+        title="Use this button to have the extension prompt you for the necessary permissions"
+      >
+        <span class="roboto-medium">Show Permissions</span>
+      </button>
+    </div>
+
     <!-- socket status indicator -->
     <div
       class="row center px-16 mb-8"

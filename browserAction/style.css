@@ -114,13 +114,8 @@ a {
   fill: var(--primary-color);
 }
 
-#power-icon {
-  width: 60px;
-  height: 60px;
-  transition: 0.3s;
-}
-#power-icon:active {
-  transform: scale(0.9);
+.icon:hover {
+  cursor: pointer;
 }
 
 .icon-on {
@@ -129,6 +124,19 @@ a {
 
 .icon-off {
   fill: var(--danger-color);
+}
+
+.icon-warning {
+  fill: var(--warning-color);
+}
+
+#power-icon {
+  width: 60px;
+  height: 60px;
+  transition: 0.3s;
+}
+#power-icon:active {
+  transform: scale(0.9);
 }
 
 .btn-block {

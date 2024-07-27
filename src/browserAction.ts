@@ -1,6 +1,7 @@
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction
 import browser from 'webextension-polyfill'
 import $ from 'jquery'
+import manifest from '../manifest.json'
 
 import {
   STORAGE_KEYS,
@@ -162,17 +163,17 @@ function hookupAnchorElement(eleId: string) {
 
 async function renderVideoStatus(foundVideo: boolean) {
   const { enabled } = await getStorageValues()
-  const iconOff = $('#video-status-icon-off')
-  const iconOn = $('#video-status-icon-on')
+  const iconOffEle = $('#video-status-icon-off')
+  const iconOnEle = $('#video-status-icon-on')
   const findVideoBtn = $('#find-video-btn')
 
   if (foundVideo) {
-    iconOff.addClass('hidden')
-    iconOn.removeClass('hidden')
+    iconOffEle.addClass('hidden')
+    iconOnEle.removeClass('hidden')
     findVideoBtn.addClass('hidden')
   } else {
-    iconOff.removeClass('hidden')
-    iconOn.addClass('hidden')
+    iconOffEle.removeClass('hidden')
+    iconOnEle.addClass('hidden')
 
     // extension is enabled but no video found, render button to try and find it
     if (enabled) {
@@ -181,6 +182,45 @@ async function renderVideoStatus(foundVideo: boolean) {
         sendMessageToTab({ type: 'findVideo' } satisfies BrowserMessage)
       })
     }
+  }
+}
+
+async function renderPermsStatus() {
+  const iconOffEle = $('#perms-status-icon-off')
+  const iconOnEle = $('#perms-status-icon-on')
+  const iconWarningEle = $('#perms-status-icon-warning')
+  logger.log('perms', await browser.permissions.getAll())
+  const allPerms = await browser.permissions.getAll()
+  const hasAllPerms =
+    allPerms.origins?.length === manifest.content_scripts.length
+  const hasSomePerms = (allPerms.origins?.length || 0) > 0
+
+  if (hasAllPerms) {
+    iconOffEle.addClass('hidden')
+    iconOnEle.removeClass('hidden')
+    iconWarningEle.addClass('hidden')
+  }
+  // the user will have to manually enable permissions
+  else if (hasSomePerms) {
+    iconOffEle.addClass('hidden')
+    iconOnEle.addClass('hidden')
+    iconWarningEle.removeClass('hidden')
+  } else {
+    const promptPermsBtn = $('#prompt-perms-btn')
+    iconOffEle.removeClass('hidden')
+    iconOnEle.addClass('hidden')
+    iconWarningEle.addClass('hidden')
+    promptPermsBtn.removeClass('hidden')
+    promptPermsBtn.on('click', async () => {
+      const granted = await browser.permissions.request({
+        origins: manifest.content_scripts.flatMap((cs) => cs.matches),
+      })
+      if (granted) {
+        promptPermsBtn.addClass('hidden')
+        iconOffEle.addClass('hidden')
+        iconOnEle.removeClass('hidden')
+      }
+    })
   }
 }
 
@@ -222,6 +262,7 @@ async function main() {
 
   // default to false until port responds to check for video
   renderVideoStatus(false)
+  renderPermsStatus()
 
   hookupAnchorElement('support-link')
   hookupAnchorElement('donation-link')
