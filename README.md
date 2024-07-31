@@ -1,5 +1,11 @@
 # WatchRoom - Watch Together
 
+## Warning!!!
+
+The repo currently contains some hardcoded paths and other things specific to my system.
+
+I will work on generalizing this when I can!
+
 ## How to dev
 
 ### Dev Env

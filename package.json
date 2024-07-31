@@ -1,6 +1,7 @@
 {
   "name": "watchroom",
   "packageManager": "yarn@4.0.2",
+  "license": "MIT",
   "scripts": {
     "build:dev": "ENV=dev webpack --config webpack/webpack.config.js",
     "build:prod": "ENV=prod webpack --config webpack/webpack.config.js",
